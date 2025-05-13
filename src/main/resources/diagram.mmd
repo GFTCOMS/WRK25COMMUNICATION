@@ -1,0 +1,79 @@
+classDiagram
+class NotificationEvent {
+- String userId
+- String message
+- LocalDateTime timestamp
+}
+
+class Notification {
+- String userId
+- String message
+- LocalDateTime timestamp
+- boolean important
++ markAsImportant()
++ isOlderThan(int days)
+}
+
+class NotificationRepository {
+<<interface>>
++ save(Notification notification)
++ List~Notification~ findByUserId(String userId)
++ deleteOlderThan(int days)
+}
+
+class RabbitMQProducer {
+- RabbitTemplate rabbitTemplate
+- Queue queue
++ sendNotification(NotificationEvent event)
+}
+
+class RabbitMQConsumer {
+- NotificationRepository repository
++ receive(NotificationEvent event)
+}
+
+class NotificationService {
+- RabbitMQProducer producer
++ notifyUser(String userId, String message)
++ List~Notification~ getNotificationsForUser(String userId)
+}
+
+class NotificationRestController {
+- NotificationService service
++ sendNotification(String userId, String message)
++ getNotificationsForUser(String userId)
+}
+
+class NotificationJPARepository {
++ save(Notification notification)
++ List~Notification~ findByUserId(String userId)
++ deleteOlderThan(int days)
+}
+
+class NotificationEntity {
+- Long id
+- String userId
+- String message
+- LocalDateTime timestamp
+- boolean important
+}
+
+class RabbitMQConfig {
++ Queue notificationQueue()
+}
+
+class Queue {
+- String name
+}
+
+NotificationEvent --> Notification : transforms into
+Notification --> NotificationRepository : persisted by
+NotificationService --> NotificationRepository : uses
+NotificationService --> RabbitMQProducer : sends events
+RabbitMQProducer --> Queue : sends to
+RabbitMQConsumer --> Queue : listens to
+RabbitMQConsumer --> NotificationRepository : stores
+NotificationJPARepository --> NotificationEntity : persists as
+NotificationEntity --> Notification : maps to
+NotificationRestController --> NotificationService : invokes
+RabbitMQConfig --> Queue : creates
