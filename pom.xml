@@ -9,10 +9,10 @@
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
     <groupId>com.gft</groupId>
-    <artifactId>WRK25_COMMUNICATON</artifactId>
+    <artifactId>WRK25_COMMUNICATION</artifactId>
     <version>0.0.1-SNAPSHOT</version>
-    <name>WRK25_COMMUNICATON</name>
-    <description>WRK25_COMMUNICATON</description>
+    <name>WRK25_COMMUNICATION</name>
+    <description>WRK25_COMMUNICATION</description>
     <url/>
     <licenses>
         <license/>
