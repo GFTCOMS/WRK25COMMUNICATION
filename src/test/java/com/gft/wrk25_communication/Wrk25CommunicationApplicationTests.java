@@ -10,4 +10,8 @@ class Wrk25CommunicationApplicationTests {
     void contextLoads() {
     }
 
+//    @Test
+//    void testMain() {
+//        Wrk25CommunicationApplication.main(new String[] {});
+//    }
 }
