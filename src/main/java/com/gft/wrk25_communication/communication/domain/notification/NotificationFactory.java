@@ -10,8 +10,8 @@ import java.time.LocalDateTime;
 @Component
 public class NotificationFactory {
 
-    public Notification reinstantiate(NotificationId id, LocalDateTime createdAt, UserId userId, String message) {
-        return new Notification(id, createdAt, userId, message);
+    public Notification reinstantiate(NotificationId id, LocalDateTime createdAt, UserId userId, String message, boolean important) {
+        return new Notification(id, createdAt, userId, message, important);
     }
 
     public Notification createProductStockChanged(UserId userId, ProductId productId, Integer stock) {

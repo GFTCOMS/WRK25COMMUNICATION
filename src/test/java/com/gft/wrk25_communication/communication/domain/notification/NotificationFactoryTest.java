@@ -8,6 +8,7 @@ import java.time.LocalDateTime;
 import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.*;
+
 class NotificationFactoryTest {
 
     @Test
@@ -20,11 +21,12 @@ class NotificationFactoryTest {
         LocalDateTime createdAt = LocalDateTime.now();
         UserId userId = new UserId(userIdUuid);
         String message = "The stock of the product \"3\" has been changed to \"4\".";
+        boolean important = false;
 
-        Notification notification = new Notification(id, createdAt, userId, message);
+        Notification notification = new Notification(id, createdAt, userId, message, important);
 
         NotificationFactory notificationFactory = new NotificationFactory();
-        Notification notificationToAssert =  notificationFactory.reinstantiate(id, createdAt, userId, message);
+        Notification notificationToAssert = notificationFactory.reinstantiate(id, createdAt, userId, message, important);
 
         assertNotNull(notificationToAssert);
         assertEquals(notification.getId(), notificationToAssert.getId());
@@ -54,4 +56,5 @@ class NotificationFactoryTest {
         assertEquals(notification.getUserId(), notificationToAssert.getUserId());
         assertEquals(notification.getMessage(), notificationToAssert.getMessage());
     }
+
 }
