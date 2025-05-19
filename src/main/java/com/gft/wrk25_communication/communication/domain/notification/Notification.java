@@ -9,11 +9,9 @@ import org.springframework.util.Assert;
 import java.time.LocalDateTime;
 
 @Getter
-@EqualsAndHashCode
-
+@EqualsAndHashCode(of = "id")
 public class Notification {
 
-    @JsonUnwrapped
     private final NotificationId id;
     private final LocalDateTime createdAt;
     private final UserId userId;
