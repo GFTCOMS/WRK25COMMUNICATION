@@ -18,7 +18,7 @@ public class NotificationFactory {
 
         Assert.notNull(stock, "Stock must not be null");
 
-        String message = String.format("The stock of the product \"%s\" has been changed to: %d.", productId.id(), stock);
+        String message = String.format("The quantity of the product \"%s\" has been changed to: %d.", productId.id(), stock);
 
         return new Notification(userId, message);
     }
