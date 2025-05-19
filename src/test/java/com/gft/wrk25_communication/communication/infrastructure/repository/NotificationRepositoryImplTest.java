@@ -1,0 +1,181 @@
+package com.gft.wrk25_communication.communication.infrastructure.repository;
+
+import com.gft.wrk25_communication.communication.domain.UserId;
+import com.gft.wrk25_communication.communication.domain.notification.Notification;
+import com.gft.wrk25_communication.communication.domain.notification.NotificationFactory;
+import com.gft.wrk25_communication.communication.domain.notification.NotificationId;
+import com.gft.wrk25_communication.communication.infrastructure.entity.NotificationEntity;
+import org.instancio.Instancio;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
+
+import java.time.LocalDateTime;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Optional;
+import java.util.UUID;
+
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.*;
+import static org.mockito.Mockito.*;
+
+@ExtendWith(MockitoExtension.class)
+class NotificationRepositoryImplTest {
+
+    private List<Notification> notifications;
+    private List<NotificationEntity> notificationEntities;
+    private final NotificationFactory factory = new NotificationFactory();
+
+    @Mock
+    private NotificationEntityRepository notificationEntityRepository;
+
+    @Mock
+    private NotificationFactory notificationFactory;
+
+    @InjectMocks
+    private NotificationRepositoryImpl repositoryToTest;
+
+    @BeforeEach
+    void setUp() {
+        initObjects();
+    }
+
+    @Test
+    void testFindAllByUserId() {
+
+        UUID userId = notificationEntities.get(0).getUserId();
+
+        when(notificationEntityRepository.findAllByUserId(userId)).thenReturn(notificationEntities);
+
+        for (int i = 0; i < notificationEntities.size(); i++) {
+            when(notificationFactory.reinstantiate(
+                    new NotificationId(notificationEntities.get(i).getId()),
+                    notificationEntities.get(i).getCreatedAt(),
+                    new UserId(notificationEntities.get(i).getUserId()),
+                    notificationEntities.get(i).getMessage(),
+                    notificationEntities.get(i).isImportant()
+            )).thenReturn(notifications.get(i));
+        }
+
+        List<Notification> actualNotifications = repositoryToTest.findAllByUserId(new UserId(userId));
+
+        assertEquals(notificationEntities.size(), actualNotifications.size());
+        assertTrue(actualNotifications.containsAll(notifications));
+    }
+
+    @Test
+    void testFindById() {
+
+        NotificationEntity entity = notificationEntities.get(0);
+        Notification notification = notifications.get(0);
+
+        when(notificationEntityRepository.findById(entity.getId())).thenReturn(Optional.of(entity));
+        when(notificationFactory.reinstantiate(
+                any(NotificationId.class),
+                any(LocalDateTime.class),
+                any(UserId.class),
+                anyString(),
+                anyBoolean()
+        )).thenReturn(notification);
+
+        Optional<Notification> actualNotification = repositoryToTest.findById(new NotificationId(entity.getId()));
+
+        assertTrue(actualNotification.isPresent());
+        assertEquals(notification.getId(), actualNotification.get().getId());
+        assertEquals(notification.getCreatedAt(), actualNotification.get().getCreatedAt());
+        assertEquals(notification.getUserId(), actualNotification.get().getUserId());
+        assertEquals(notification.getMessage(), actualNotification.get().getMessage());
+        assertEquals(notification.isImportant(), actualNotification.get().isImportant());
+    }
+    @Test
+    void testFindByIdWithIdNull() {
+
+        String message = "id cannot be null";
+
+         IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> repositoryToTest.findById(new NotificationId(null)));
+
+        assertEquals(message, exception.getMessage());
+    }
+
+    @Test
+    void testFindByIdNotFound() {
+
+        UUID notificationId = UUID.randomUUID();
+
+        when(notificationEntityRepository.findById(notificationId)).thenReturn(Optional.empty());
+
+        Optional<Notification> actualNotification = repositoryToTest.findById(new NotificationId(notificationId));
+
+        assertTrue(actualNotification.isEmpty());
+    }
+
+    @Test
+    void testSave() {
+
+        NotificationEntity entity = notificationEntities.get(0);
+        Notification notification = notifications.get(0);
+
+        when(notificationEntityRepository.save(any(NotificationEntity.class))).thenReturn(entity);
+        when(notificationFactory.reinstantiate(
+                any(NotificationId.class),
+                any(LocalDateTime.class),
+                any(UserId.class),
+                anyString(),
+                anyBoolean()
+        )).thenReturn(notification);
+
+        Notification actualNotification = repositoryToTest.save(notification);
+
+        assertEquals(notification.getId(), actualNotification.getId());
+        assertEquals(notification.getCreatedAt(), actualNotification.getCreatedAt());
+        assertEquals(notification.getUserId(), actualNotification.getUserId());
+        assertEquals(notification.getMessage(), actualNotification.getMessage());
+        assertEquals(notification.isImportant(), actualNotification.isImportant());
+    }
+
+    @Test
+    void deleteById() {
+        repositoryToTest.deleteById(notifications.get(0).getId());
+        verify(notificationEntityRepository, times(1)).deleteById(notificationEntities.get(0).getId());
+    }
+
+    @Test
+    void setAsImportant() {
+        repositoryToTest.setAsImportant(notifications.get(0).getId());
+        verify(notificationEntityRepository, times(1)).setImportantTrueWhereId(notificationEntities.get(0).getId());
+    }
+
+    @Test
+    void setAsNotImportant() {
+        repositoryToTest.setAsNotImportant(notifications.get(0).getId());
+        verify(notificationEntityRepository, times(1)).setImportantFalseWhereId(notificationEntities.get(0).getId());
+    }
+
+    private void initObjects() {
+        UUID userId = UUID.randomUUID();
+        notificationEntities = new LinkedList<>();
+
+        notificationEntities.addAll(
+                Instancio.of(NotificationEntity.class)
+                        .stream()
+                        .limit(10)
+                        .peek(entity -> entity.setUserId(userId))
+                        .toList()
+        );
+
+        notifications = notificationEntities.stream()
+                .map(entity -> factory.reinstantiate(
+                        new NotificationId(entity.getId()),
+                        entity.getCreatedAt(),
+                        new UserId(entity.getUserId()),
+                        entity.getMessage(),
+                        entity.isImportant()
+                ))
+                .toList();
+    }
+
+}

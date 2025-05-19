@@ -11,8 +11,12 @@ public interface NotificationRepository {
 
     Optional<Notification> findById(NotificationId id);
 
-    Optional<Notification> save(Notification notification);
+    Notification save(Notification notification);
 
     void deleteById(NotificationId id);
+
+    void setAsImportant(NotificationId id);
+
+    void setAsNotImportant(NotificationId id);
 
 }

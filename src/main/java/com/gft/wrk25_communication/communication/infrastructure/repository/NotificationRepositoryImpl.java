@@ -1,0 +1,83 @@
+package com.gft.wrk25_communication.communication.infrastructure.repository;
+
+import com.gft.wrk25_communication.communication.domain.UserId;
+import com.gft.wrk25_communication.communication.domain.notification.Notification;
+import com.gft.wrk25_communication.communication.domain.notification.NotificationFactory;
+import com.gft.wrk25_communication.communication.domain.notification.NotificationId;
+import com.gft.wrk25_communication.communication.domain.notification.NotificationRepository;
+import com.gft.wrk25_communication.communication.infrastructure.entity.NotificationEntity;
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Repository;
+
+import java.util.List;
+import java.util.Optional;
+
+@Repository
+@RequiredArgsConstructor
+public class NotificationRepositoryImpl implements NotificationRepository {
+
+    private final NotificationEntityRepository repository;
+    private final NotificationFactory factory;
+
+    @Override
+    public List<Notification> findAllByUserId(UserId userId) {
+        return repository.findAllByUserId(userId.id()).stream().map(notificationEntity ->
+                factory.reinstantiate(
+                        new NotificationId(notificationEntity.getId()),
+                        notificationEntity.getCreatedAt(),
+                        new UserId(notificationEntity.getUserId()),
+                        notificationEntity.getMessage(),
+                        notificationEntity.isImportant()
+                )).toList();
+    }
+
+    @Override
+    public Optional<Notification> findById(NotificationId id) {
+        return repository.findById(id.id()).map(notificationEntity ->
+                factory.reinstantiate(
+                        new NotificationId(notificationEntity.getId()),
+                        notificationEntity.getCreatedAt(),
+                        new UserId(notificationEntity.getId()),
+                        notificationEntity.getMessage(),
+                        notificationEntity.isImportant()
+                ));
+    }
+
+    @Override
+    public Notification save(Notification notification) {
+
+        NotificationEntity entityToSave =
+                NotificationEntity.builder()
+                .createdAt(notification.getCreatedAt())
+                .userId(notification.getUserId().id())
+                .message(notification.getMessage())
+                .important(notification.isImportant())
+                .build();
+
+        NotificationEntity savedEntity = repository.save(entityToSave);
+
+        return factory.reinstantiate(
+                new NotificationId(savedEntity.getId()),
+                savedEntity.getCreatedAt(),
+                new UserId(savedEntity.getUserId()),
+                savedEntity.getMessage(),
+                savedEntity.isImportant()
+        );
+    }
+
+    @Override
+    public void deleteById(NotificationId id) {
+        repository.deleteById(id.id());
+    }
+
+    @Override
+    public void setAsImportant(NotificationId id) {
+        repository.setImportantTrueWhereId(id.id());
+    }
+
+    @Override
+    public void setAsNotImportant(NotificationId id) {
+        repository.setImportantFalseWhereId(id.id());
+    }
+
+}
