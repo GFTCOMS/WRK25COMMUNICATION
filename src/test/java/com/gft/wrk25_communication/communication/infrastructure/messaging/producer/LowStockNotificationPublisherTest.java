@@ -17,7 +17,7 @@ class LowStockNotificationPublisherTest {
     private LowStockNotificationPublisher publisher;
 
     @BeforeEach
-    void setUp() {
+    void initData() {
         rabbitTemplate = mock(RabbitTemplate.class);
         publisher = new LowStockNotificationPublisher(rabbitTemplate, "user", "notification");
     }

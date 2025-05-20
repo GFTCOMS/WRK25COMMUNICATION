@@ -17,7 +17,7 @@ class LowStockNotificationReceiverTest {
     private LowStockNotificationReceiver receiver;
 
     @BeforeEach
-    void setUp() {
+    void initData() {
         publisher = mock(LowStockNotificationPublisher.class);
         receiver = new LowStockNotificationReceiver(publisher);
     }

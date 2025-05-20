@@ -9,7 +9,7 @@ import static org.junit.jupiter.api.Assertions.*;
 class LowStockNotificationTest {
 
     @Test
-    void shouldCreateNotificationWithValidData() {
+    void testCreateNotification() {
         UUID userId = UUID.randomUUID();
         Long productId = 123L;
         Integer quantity = 10;
@@ -22,7 +22,7 @@ class LowStockNotificationTest {
     }
 
     @Test
-    void shouldFailWhenUserIdIsNull() {
+    void testIdNull() {
         Exception exception = assertThrows(IllegalArgumentException.class, () ->
                 new LowStockNotification(null, 123L, 10)
         );
@@ -30,7 +30,7 @@ class LowStockNotificationTest {
     }
 
     @Test
-    void shouldFailWhenProductIdIsNull() {
+    void testProductIdNull() {
         Exception exception = assertThrows(IllegalArgumentException.class, () ->
                 new LowStockNotification(UUID.randomUUID(), null, 10)
         );
@@ -38,7 +38,7 @@ class LowStockNotificationTest {
     }
 
     @Test
-    void shouldFailWhenStockIsNull() {
+    void testQuantityNull() {
         Exception exception = assertThrows(IllegalArgumentException.class, () ->
                 new LowStockNotification(UUID.randomUUID(), 123L, null)
         );
