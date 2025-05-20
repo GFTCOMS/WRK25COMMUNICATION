@@ -74,3 +74,13 @@ jobs:
       - name: Push Docker image
         run: |
           docker push europe-southwest1-docker.pkg.dev/wrk25communication/coms-repository/coms-image:latest
+
+      # Autentica con GCP (usando tu COMS_KEY)
+      - name: Authenticate to Google Cloud
+        uses: google-github-actions/auth@v1
+        with:
+          credentials_json: "${{ secrets.COMS_KEY }}"
+
+      # Configura Docker para Artifact Registry
+      - name: Configure Docker for Artifact Registry
+        uses: google-github-actions/docker-auth@v1
