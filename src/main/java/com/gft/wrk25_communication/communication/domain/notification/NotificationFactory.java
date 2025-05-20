@@ -14,11 +14,11 @@ public class NotificationFactory {
         return new Notification(id, createdAt, userId, message, important);
     }
 
-    public Notification createProductStockChanged(UserId userId, ProductId productId, Integer stock) {
+    public Notification createProductStockChanged(UserId userId, ProductId productId, Integer quantity) {
 
-        Assert.notNull(stock, "Stock must not be null");
+        Assert.notNull(quantity, "Quantity must not be null");
 
-        String message = String.format("The stock of the product \"%s\" has been changed to: %d.", productId.id(), stock);
+        String message = String.format("The quantity of the product \"%s\" has been changed to: %d.", productId.id(), quantity);
 
         return new Notification(userId, message);
     }

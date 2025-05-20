@@ -20,7 +20,7 @@ class NotificationFactoryTest {
         NotificationId id = new NotificationId(idUuid);
         LocalDateTime createdAt = LocalDateTime.now();
         UserId userId = new UserId(userIdUuid);
-        String message = "The stock of the product \"3\" has been changed to \"4\".";
+        String message = "The quantity of the product \"3\" has been changed to \"4\".";
         boolean important = false;
 
         Notification notification = new Notification(id, createdAt, userId, message, important);
@@ -43,7 +43,7 @@ class NotificationFactoryTest {
         Integer stock = 4;
 
         UserId userId = new UserId(userIdUuid);
-        String message = "The stock of the product \"3\" has been changed to: 4.";
+        String message = "The quantity of the product \"3\" has been changed to: 4.";
 
         Notification notification = new Notification(userId, message);
 
