@@ -61,9 +61,11 @@ jobs:
 
       # Paso 7: Autenticar Docker en Artifact Registry
       - name: Configure Docker authentication
-        uses: google-github-actions/docker-auth@v1
+        run: |
+          gcloud auth configure-docker europe-southwest1-docker.pkg.dev
+      
 
-      # Paso 8: Construir imagen Docker
+        # Paso 8: Construir imagen Docker
       - name: Build Docker image
         run: |
           docker build \
