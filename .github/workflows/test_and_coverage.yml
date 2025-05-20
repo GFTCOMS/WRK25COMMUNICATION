@@ -13,9 +13,11 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+      # Paso 1: Checkout del código
       - name: Checkout code
         uses: actions/checkout@v4
 
+      # Paso 2: Configurar JDK 17
       - name: Set up JDK 17
         uses: actions/setup-java@v4
         with:
@@ -23,12 +25,15 @@ jobs:
           distribution: 'temurin'
           cache: maven
 
+      # Paso 3: Compilar y ejecutar tests con Maven
       - name: Build with Maven (test + coverage)
         run: mvn clean verify
 
+      # Paso 4: Generar reporte JaCoCo
       - name: Generate JaCoCo report
         run: mvn jacoco:report
 
+      # Paso 5: Verificar cobertura de código
       - name: Check JaCoCo coverage
         run: |
           covered_lines=$(grep -oP 'covered="\K[0-9]+' target/site/jacoco/jacoco.xml | awk '{s+=$1} END {print s}')
@@ -48,17 +53,24 @@ jobs:
             exit 1
           fi
 
+      # Paso 6: Configurar autenticación en GCP
+      - name: Set up gcloud
+        uses: google-github-actions/setup-gcloud@v2
+        with:
+          project_id: ${{ secrets.GCP_PROJECT_ID }}
+          service_account_key: ${{ secrets.GCP_SA_KEY }}
+
+      # Paso 7: Autenticar Docker en Artifact Registry
+      - name: Docker Auth
+        run: |
+          gcloud auth configure-docker europe-southwest1-docker.pkg.dev
+
+      # Paso 8: Construir imagen Docker
       - name: Build Docker image
         run: |
-          docker build -t wrk25_communication:latest .
+          docker build -t europe-southwest1-docker.pkg.dev/wrk25communication/coms-repository/coms-image:latest .
 
-      - name: Log in to Docker Hub
-        uses: docker/login-action@v3
-        with:
-          username: ${{ secrets.DOCKER_HUB_USERNAME }}
-          password: ${{ secrets.DOCKER_HUB_TOKEN }}
-
+      # Paso 9: Subir imagen a Artifact Registry
       - name: Push Docker image
         run: |
-          docker tag wrk25_communication your-dockerhub-username/wrk25_communication:latest
-          docker push your-dockerhub-username/wrk25_communication:latest
+          docker push europe-southwest1-docker.pkg.dev/wrk25communication/coms-repository/coms-image:latest
