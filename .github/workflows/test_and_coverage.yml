@@ -53,19 +53,17 @@ jobs:
             exit 1
           fi
 
-      # Paso 6: Configurar autenticación en GCP
-      - name: Set up gcloud
-        uses: google-github-actions/setup-gcloud@v2
+      # Paso 6: Autenticarse con la cuenta de servicio
+      - name: Authenticate to Google Cloud
+        uses: google-github-actions/auth@v1
         with:
-          project_id: ${{ secrets.GCP_PROJECT_ID }}
-          service_account_key: ${{ secrets.COMS_KEY }}
+          credentials_json: ${{ secrets.COMS_KEY }}
 
       # Paso 7: Autenticar Docker en Artifact Registry
-      - name: Docker Auth
-        run: |
-          gcloud auth configure-docker europe-southwest1-docker.pkg.dev
-          
-          # Paso 8: Construir imagen Docker
+      - name: Configure Docker authentication
+        uses: google-github-actions/docker-auth@v1
+
+      # Paso 8: Construir imagen Docker
       - name: Build Docker image
         run: |
           docker build \
