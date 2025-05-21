@@ -1,5 +1,6 @@
 package com.gft.wrk25_communication.communication.application;
 
+import com.gft.wrk25_communication.communication.application.dto.NotificationDTO;
 import com.gft.wrk25_communication.communication.domain.UserId;
 import com.gft.wrk25_communication.communication.domain.notification.Notification;
 import com.gft.wrk25_communication.communication.domain.notification.NotificationFactory;
@@ -48,11 +49,30 @@ class NotificationGetAllUseCaseTest {
             ));
         }
 
+        List<NotificationDTO> notificationDTOs = getNotificationDTOs(notifications);
+
         when(notificationRepository.findAllByUserId(userId)).thenReturn(notifications);
 
-        List<Notification> actualNotifications = notificationGetAllUseCase.execute(userId);
+        List<NotificationDTO> actualNotifications = notificationGetAllUseCase.execute(userId);
 
         assertEquals(notifications.size(), actualNotifications.size());
-        assertTrue(actualNotifications.containsAll(notifications));
+        assertTrue(actualNotifications.containsAll(notificationDTOs));
+    }
+
+    private static List<NotificationDTO> getNotificationDTOs(List<Notification> notifications) {
+        List<NotificationDTO> notificationDTOs = new ArrayList<>();
+
+        for (Notification notification: notifications) {
+            notificationDTOs.add(
+                    new NotificationDTO(
+                            notification.getId().id(),
+                            notification.getCreatedAt(),
+                            notification.getUserId().id(),
+                            notification.getMessage(),
+                            notification.isImportant()
+                    )
+            );
+        }
+        return notificationDTOs;
     }
 }

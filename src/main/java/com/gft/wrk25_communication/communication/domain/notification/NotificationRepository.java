@@ -9,7 +9,7 @@ public interface NotificationRepository {
 
     List<Notification> findAllByUserId(UserId id);
 
-    Optional<Notification> findById(NotificationId id);
+    boolean existsById(NotificationId id);
 
     Notification save(Notification notification);
 

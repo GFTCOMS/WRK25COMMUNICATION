@@ -40,15 +40,15 @@ class NotificationFactoryTest {
 
         UUID userIdUuid = UUID.randomUUID();
         ProductId productId = new ProductId(3L);
-        Integer stock = 4;
+        Integer quantity = 4;
 
         UserId userId = new UserId(userIdUuid);
-        String message = "The quantity of the product \"3\" has been changed to: 4.";
+        String message = "The stock of the product \"3\" is lower than: 4.";
 
         Notification notification = new Notification(userId, message);
 
         NotificationFactory notificationFactory = new NotificationFactory();
-        Notification notificationToAssert = notificationFactory.createProductStockChanged(userId, productId, stock);
+        Notification notificationToAssert = notificationFactory.createLowStockNotification(userId, productId, quantity);
 
         assertNotNull(notificationToAssert);
         assertNotNull(notificationToAssert.getId());

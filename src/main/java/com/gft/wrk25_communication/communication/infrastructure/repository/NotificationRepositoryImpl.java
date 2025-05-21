@@ -6,11 +6,11 @@ import com.gft.wrk25_communication.communication.domain.notification.Notificatio
 import com.gft.wrk25_communication.communication.domain.notification.NotificationId;
 import com.gft.wrk25_communication.communication.domain.notification.NotificationRepository;
 import com.gft.wrk25_communication.communication.infrastructure.entity.NotificationEntity;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
-import java.util.Optional;
 
 @Repository
 @RequiredArgsConstructor
@@ -32,27 +32,22 @@ public class NotificationRepositoryImpl implements NotificationRepository {
     }
 
     @Override
-    public Optional<Notification> findById(NotificationId id) {
-        return repository.findById(id.id()).map(notificationEntity ->
-                factory.reinstantiate(
-                        new NotificationId(notificationEntity.getId()),
-                        notificationEntity.getCreatedAt(),
-                        new UserId(notificationEntity.getId()),
-                        notificationEntity.getMessage(),
-                        notificationEntity.isImportant()
-                ));
+    public boolean existsById(NotificationId id) {
+        return repository.existsById(id.id());
     }
 
     @Override
+    @Transactional
     public Notification save(Notification notification) {
 
         NotificationEntity entityToSave =
                 NotificationEntity.builder()
-                .createdAt(notification.getCreatedAt())
-                .userId(notification.getUserId().id())
-                .message(notification.getMessage())
-                .important(notification.isImportant())
-                .build();
+                        .id(notification.getId().id())
+                        .createdAt(notification.getCreatedAt())
+                        .userId(notification.getUserId().id())
+                        .message(notification.getMessage())
+                        .important(notification.isImportant())
+                        .build();
 
         NotificationEntity savedEntity = repository.save(entityToSave);
 
@@ -66,11 +61,13 @@ public class NotificationRepositoryImpl implements NotificationRepository {
     }
 
     @Override
+    @Transactional
     public void deleteById(NotificationId id) {
         repository.deleteById(id.id());
     }
 
     @Override
+    @Transactional
     public void setAsImportant(NotificationId id) {
         repository.setImportantTrueWhereId(id.id());
     }

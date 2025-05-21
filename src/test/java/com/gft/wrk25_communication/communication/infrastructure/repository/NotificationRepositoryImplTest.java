@@ -16,7 +16,6 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.time.LocalDateTime;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -68,49 +67,24 @@ class NotificationRepositoryImplTest {
     }
 
     @Test
-    void testFindById() {
+    void testExistsById() {
 
         NotificationEntity entity = notificationEntities.get(0);
-        Notification notification = notifications.get(0);
 
-        when(notificationEntityRepository.findById(entity.getId())).thenReturn(Optional.of(entity));
-        when(notificationFactory.reinstantiate(
-                any(NotificationId.class),
-                any(LocalDateTime.class),
-                any(UserId.class),
-                anyString(),
-                anyBoolean()
-        )).thenReturn(notification);
+        when(notificationEntityRepository.existsById(entity.getId())).thenReturn(true);
 
-        Optional<Notification> actualNotification = repositoryToTest.findById(new NotificationId(entity.getId()));
+        boolean notificationExists = repositoryToTest.existsById(new NotificationId(entity.getId()));
 
-        assertTrue(actualNotification.isPresent());
-        assertEquals(notification.getId(), actualNotification.get().getId());
-        assertEquals(notification.getCreatedAt(), actualNotification.get().getCreatedAt());
-        assertEquals(notification.getUserId(), actualNotification.get().getUserId());
-        assertEquals(notification.getMessage(), actualNotification.get().getMessage());
-        assertEquals(notification.isImportant(), actualNotification.get().isImportant());
+        assertTrue(notificationExists);
     }
     @Test
     void testFindByIdWithIdNull() {
 
         String message = "id cannot be null";
 
-         IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> repositoryToTest.findById(new NotificationId(null)));
+         IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> repositoryToTest.existsById(new NotificationId(null)));
 
         assertEquals(message, exception.getMessage());
-    }
-
-    @Test
-    void testFindByIdNotFound() {
-
-        UUID notificationId = UUID.randomUUID();
-
-        when(notificationEntityRepository.findById(notificationId)).thenReturn(Optional.empty());
-
-        Optional<Notification> actualNotification = repositoryToTest.findById(new NotificationId(notificationId));
-
-        assertTrue(actualNotification.isEmpty());
     }
 
     @Test

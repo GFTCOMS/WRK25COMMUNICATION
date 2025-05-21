@@ -1,15 +1,16 @@
 package com.gft.wrk25_communication.communication.domain.notification;
 
-import com.fasterxml.jackson.annotation.JsonUnwrapped;
 import com.gft.wrk25_communication.communication.domain.UserId;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
+import lombok.ToString;
 import org.springframework.util.Assert;
 
 import java.time.LocalDateTime;
 
 @Getter
 @EqualsAndHashCode(of = "id")
+@ToString
 public class Notification {
 
     private final NotificationId id;

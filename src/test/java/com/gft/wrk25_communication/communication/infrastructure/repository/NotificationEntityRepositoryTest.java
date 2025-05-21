@@ -18,7 +18,7 @@ class NotificationEntityRepositoryTest {
     private NotificationEntityRepository repositoryToTest;
     @Autowired
     private EntityManager entityManager;
-    private final UUID notificationId = UUID.randomUUID();
+    private UUID notificationId;
 
     @Test
     void setImportantTrueWhereId() {
@@ -27,6 +27,9 @@ class NotificationEntityRepositoryTest {
 
         entityManager.persist(entityToUpdate);
         entityManager.flush();
+
+        entityManager.refresh(entityToUpdate);
+        notificationId = entityToUpdate.getId();
 
         repositoryToTest.setImportantTrueWhereId(notificationId);
         entityManager.refresh(entityToUpdate);
@@ -44,6 +47,9 @@ class NotificationEntityRepositoryTest {
         entityManager.persist(entityToUpdate);
         entityManager.flush();
 
+        entityManager.refresh(entityToUpdate);
+        notificationId = entityToUpdate.getId();
+
         repositoryToTest.setImportantFalseWhereId(notificationId);
         entityManager.refresh(entityToUpdate);
 
@@ -53,7 +59,7 @@ class NotificationEntityRepositoryTest {
 
     private NotificationEntity buildNotificationEntity(boolean important) {
         return NotificationEntity.builder()
-                .id(notificationId)
+                .id(UUID.randomUUID())
                 .createdAt(LocalDateTime.now())
                 .userId(UUID.randomUUID())
                 .message("message")
