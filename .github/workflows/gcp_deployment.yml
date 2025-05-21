@@ -2,7 +2,7 @@ name: GCP Deployment Pipeline
 
 on:
   workflow_run:
-    workflows: ["Tests and Coverage Validation"]  # Nombre exacto del primer workflow
+    workflows: ["Tests and Coverage Validation"]
     types:
       - completed
     branches:
@@ -10,44 +10,46 @@ on:
 
 jobs:
   gcp_deployment:
-    if: ${{ github.event.workflow_run.conclusion == 'success' }}  # Solo si los tests pasaron
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
     runs-on: ubuntu-latest
 
     steps:
-      # Paso 1: Checkout del código
+      # Paso 1: Checkout del código (necesario para obtener el SHA del commit)
       - name: Checkout code
         uses: actions/checkout@v4
 
-      # Paso 2: Autenticarse con la cuenta de servicio
+      # Paso 2: Autenticación en GCP
       - name: Authenticate to Google Cloud
         uses: google-github-actions/auth@v1
         with:
           credentials_json: ${{ secrets.COMS_KEY }}
 
-      # Paso 3: Autenticar Docker en Artifact Registry
+      # Paso 3: Configurar Docker
       - name: Configure Docker authentication
         run: |
           gcloud auth configure-docker europe-southwest1-docker.pkg.dev
 
-      # Paso 4: Construir imagen Docker
+      # Paso 4: Construir imagen con tag único (SHA del commit)
       - name: Build Docker image
         run: |
           docker build \
+            -t europe-southwest1-docker.pkg.dev/${{ secrets.GCP_PROJECT_ID }}/coms-repository/coms-image:${{ github.sha }} \
             -t europe-southwest1-docker.pkg.dev/${{ secrets.GCP_PROJECT_ID }}/coms-repository/coms-image:latest \
             .
 
-      # Paso 5: Subir imagen a Artifact Registry
-      - name: Push Docker image
+      # Paso 5: Subir ambas versiones de la imagen
+      - name: Push Docker images
         run: |
-          docker push \
-            europe-southwest1-docker.pkg.dev/${{ secrets.GCP_PROJECT_ID }}/coms-repository/coms-image:latest
+          docker push europe-southwest1-docker.pkg.dev/${{ secrets.GCP_PROJECT_ID }}/coms-repository/coms-image:${{ github.sha }}
+          docker push europe-southwest1-docker.pkg.dev/${{ secrets.GCP_PROJECT_ID }}/coms-repository/coms-image:latest
 
-      # Paso 6: Desplegar en Google Cloud Run
+      # Paso 6: Desplegar en Cloud Run con el tag único
       - name: Deploy to Cloud Run
         uses: google-github-actions/deploy-cloudrun@v1
         with:
           service: ${{ secrets.COMS_RUN_SERVICE }}
-          image: europe-southwest1-docker.pkg.dev/${{ secrets.GCP_PROJECT_ID }}/coms-repository/coms-image:latest
+          image: europe-southwest1-docker.pkg.dev/${{ secrets.GCP_PROJECT_ID }}/coms-repository/coms-image:${{ github.sha }}  # Tag único aquí
           region: ${{ secrets.GCP_REGION }}
           credentials: ${{ secrets.COMS_KEY }}
           allow_unauthenticated: true
+          flags: "--no-traffic"  # Fuerza nueva revisión
