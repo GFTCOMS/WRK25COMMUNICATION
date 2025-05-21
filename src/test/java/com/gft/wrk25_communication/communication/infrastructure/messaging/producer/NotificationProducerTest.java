@@ -17,13 +17,13 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
-class LowStockNotificationProducerTest {
+class NotificationProducerTest {
 
     @Mock
     private RabbitTemplate rabbitTemplate;
 
     @InjectMocks
-    private LowStockNotificationProducer publisher;
+    private NotificationProducer publisher;
 
     @Test
     void testPublish() {

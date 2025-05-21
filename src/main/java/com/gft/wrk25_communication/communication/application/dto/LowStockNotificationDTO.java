@@ -10,8 +10,8 @@ public record LowStockNotificationDTO(UUID userId, Long productId, Integer quant
 
     public LowStockNotificationDTO {
         Assert.notNull(userId, "The user id must not be null");
-       Assert.notNull(productId, "The product id must not be null");
-      Assert.notNull(quantity, "The quantity must not be null");
+        Assert.notNull(productId, "The product id must not be null");
+        Assert.notNull(quantity, "The quantity must not be null");
     }
 
 }

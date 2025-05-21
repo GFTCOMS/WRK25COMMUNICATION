@@ -2,7 +2,7 @@ package com.gft.wrk25_communication.communication.infrastructure.event;
 
 import com.gft.wrk25_communication.communication.application.dto.NotificationDTO;
 import com.gft.wrk25_communication.communication.domain.event.NotificationCreatedEvent;
-import com.gft.wrk25_communication.communication.infrastructure.messaging.producer.LowStockNotificationProducer;
+import com.gft.wrk25_communication.communication.infrastructure.messaging.producer.NotificationProducer;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Component;
@@ -11,7 +11,7 @@ import org.springframework.stereotype.Component;
 @RequiredArgsConstructor
 public class NotificationEventHandler {
 
-    private final LowStockNotificationProducer lowStockNotificationProducer;
+    private final NotificationProducer notificationProducer;
 
     @EventListener
     public void handleNotificationCreatedEvent(NotificationCreatedEvent event) {
@@ -24,7 +24,7 @@ public class NotificationEventHandler {
                 event.notification().isImportant()
         );
 
-        lowStockNotificationProducer.publish(notificationDTO);
+        notificationProducer.publish(notificationDTO);
     }
 
 }

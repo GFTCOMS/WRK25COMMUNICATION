@@ -1,5 +1,6 @@
 package com.gft.wrk25_communication.communication.domain.notification;
 
+import com.gft.wrk25_communication.communication.domain.OrderId;
 import com.gft.wrk25_communication.communication.domain.ProductId;
 import com.gft.wrk25_communication.communication.domain.UserId;
 import org.junit.jupiter.api.Test;
@@ -38,11 +39,10 @@ class NotificationFactoryTest {
     @Test
     void testCreateProductStockChanged() {
 
-        UUID userIdUuid = UUID.randomUUID();
+        UserId userId = new UserId(UUID.randomUUID());
         ProductId productId = new ProductId(3L);
         Integer quantity = 4;
 
-        UserId userId = new UserId(userIdUuid);
         String message = "The stock of the product \"3\" is lower than: 4.";
 
         Notification notification = new Notification(userId, message);
@@ -55,6 +55,25 @@ class NotificationFactoryTest {
         assertNotNull(notificationToAssert.getCreatedAt());
         assertEquals(notification.getUserId(), notificationToAssert.getUserId());
         assertEquals(notification.getMessage(), notificationToAssert.getMessage());
+    }
+
+    @Test
+    void testCreateOrderStatusChanged() {
+
+        UserId userId = new UserId(UUID.randomUUID());
+        OrderId orderId = new OrderId(UUID.randomUUID());
+        String message = String.format("The state of the order %s has changed to \"%s\".", orderId.id(), "IN DELIVERY");
+
+        Notification notification = new Notification(userId, message);
+
+        NotificationFactory notificationFactory = new NotificationFactory();
+        Notification notificationToAssert = notificationFactory.createOrderStatusChangedNotification(userId, orderId, "IN_DELIVERY");
+
+        assertNotNull(notificationToAssert);
+        assertNotNull(notificationToAssert.getId());
+        assertNotNull(notificationToAssert.getCreatedAt());
+        assertEquals(notification.getUserId(), notificationToAssert.getUserId());
+        assertEquals(message, notificationToAssert.getMessage());
     }
 
 }

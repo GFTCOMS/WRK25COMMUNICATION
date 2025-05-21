@@ -19,7 +19,6 @@ class NotificationEntityRepositoryTest {
     @Autowired
     private EntityManager entityManager;
     private UUID notificationId;
-
     @Test
     void setImportantTrueWhereId() {
 
