@@ -1,4 +1,4 @@
-name: Build, Test, and Dockerize App
+name: Tests and Coverage Validation
 
 on:
   push:
@@ -9,7 +9,7 @@ on:
       - main
 
 jobs:
-  build:
+  tests_and_coverage:
     runs-on: ubuntu-latest
 
     steps:
@@ -52,30 +52,3 @@ jobs:
             echo "Coverage is below 100%: $coverage"
             exit 1
           fi
-
-      # Paso 6: Autenticarse con la cuenta de servicio
-      - name: Authenticate to Google Cloud
-        uses: google-github-actions/auth@v1
-        with:
-          credentials_json: ${{ secrets.COMS_KEY }}
-
-      # Paso 7: Autenticar Docker en Artifact Registry
-      - name: Configure Docker authentication
-        run: |
-          gcloud auth configure-docker europe-southwest1-docker.pkg.dev
-      
-
-        # Paso 8: Construir imagen Docker
-      - name: Build Docker image
-        run: |
-          docker build \
-            -t europe-southwest1-docker.pkg.dev/${{ secrets.GCP_PROJECT_ID }}/coms-repository/coms-image:latest \
-            .
-
-      # Paso 9: Subir imagen a Artifact Registry
-      - name: Push Docker image
-        run: |
-          docker push \
-            europe-southwest1-docker.pkg.dev/${{ secrets.GCP_PROJECT_ID }}/coms-repository/coms-image:latest
-
-          
