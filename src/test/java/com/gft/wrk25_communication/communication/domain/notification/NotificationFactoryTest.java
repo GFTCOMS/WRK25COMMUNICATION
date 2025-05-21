@@ -8,6 +8,7 @@ import java.time.LocalDateTime;
 import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.*;
+
 class NotificationFactoryTest {
 
     @Test
@@ -20,11 +21,12 @@ class NotificationFactoryTest {
         LocalDateTime createdAt = LocalDateTime.now();
         UserId userId = new UserId(userIdUuid);
         String message = "The quantity of the product \"3\" has been changed to \"4\".";
+        boolean important = false;
 
-        Notification notification = new Notification(id, createdAt, userId, message);
+        Notification notification = new Notification(id, createdAt, userId, message, important);
 
         NotificationFactory notificationFactory = new NotificationFactory();
-        Notification notificationToAssert =  notificationFactory.reinstantiate(id, createdAt, userId, message);
+        Notification notificationToAssert = notificationFactory.reinstantiate(id, createdAt, userId, message, important);
 
         assertNotNull(notificationToAssert);
         assertEquals(notification.getId(), notificationToAssert.getId());
@@ -38,15 +40,15 @@ class NotificationFactoryTest {
 
         UUID userIdUuid = UUID.randomUUID();
         ProductId productId = new ProductId(3L);
-        Integer stock = 4;
+        Integer quantity = 4;
 
         UserId userId = new UserId(userIdUuid);
-        String message = "The quantity of the product \"3\" has been changed to: 4.";
+        String message = "The stock of the product \"3\" is lower than: 4.";
 
         Notification notification = new Notification(userId, message);
 
         NotificationFactory notificationFactory = new NotificationFactory();
-        Notification notificationToAssert = notificationFactory.createProductStockChanged(userId, productId, stock);
+        Notification notificationToAssert = notificationFactory.createLowStockNotification(userId, productId, quantity);
 
         assertNotNull(notificationToAssert);
         assertNotNull(notificationToAssert.getId());
@@ -54,4 +56,5 @@ class NotificationFactoryTest {
         assertEquals(notification.getUserId(), notificationToAssert.getUserId());
         assertEquals(notification.getMessage(), notificationToAssert.getMessage());
     }
+
 }
