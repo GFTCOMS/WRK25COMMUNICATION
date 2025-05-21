@@ -1,0 +1,145 @@
+databaseChangeLog:
+  - changeSet:
+      id: insert-notifications-2
+      author: liquibase
+      changes:
+        - insert:
+            tableName: notifications
+            columns:
+              - column: { name: id, value: "00000001-0000-0000-0000-000000000001" }
+              - column: { name: created_at, valueDate: "2024-05-01T08:00:00" }
+              - column: { name: user_id, value: "00000000-0000-0000-0000-000000000001" }
+              - column: { name: message, value: "Notificación 1" }
+        - insert:
+            tableName: notifications
+            columns:
+              - column: { name: id, value: "00000002-0000-0000-0000-000000000002" }
+              - column: { name: created_at, valueDate: "2024-05-02T09:00:00" }
+              - column: { name: user_id, value: "00000000-0000-0000-0000-000000000002" }
+              - column: { name: message, value: "Notificación 2" }
+        - insert:
+            tableName: notifications
+            columns:
+              - column: { name: id, value: "00000003-0000-0000-0000-000000000003" }
+              - column: { name: created_at, valueDate: "2024-05-03T10:00:00" }
+              - column: { name: user_id, value: "00000000-0000-0000-0000-000000000003" }
+              - column: { name: message, value: "Notificación 3" }
+        - insert:
+            tableName: notifications
+            columns:
+              - column: { name: id, value: "00000004-0000-0000-0000-000000000004" }
+              - column: { name: created_at, valueDate: "2024-05-04T11:00:00" }
+              - column: { name: user_id, value: "00000000-0000-0000-0000-000000000004" }
+              - column: { name: message, value: "Notificación 4" }
+        - insert:
+            tableName: notifications
+            columns:
+              - column: { name: id, value: "00000005-0000-0000-0000-000000000005" }
+              - column: { name: created_at, valueDate: "2024-05-05T12:00:00" }
+              - column: { name: user_id, value: "00000000-0000-0000-0000-000000000005" }
+              - column: { name: message, value: "Notificación 5" }
+        - insert:
+            tableName: notifications
+            columns:
+              - column: { name: id, value: "00000006-0000-0000-0000-000000000006" }
+              - column: { name: created_at, valueDate: "2024-05-06T13:00:00" }
+              - column: { name: user_id, value: "00000000-0000-0000-0000-000000000006" }
+              - column: { name: message, value: "Notificación 6" }
+        - insert:
+            tableName: notifications
+            columns:
+              - column: { name: id, value: "00000007-0000-0000-0000-000000000007" }
+              - column: { name: created_at, valueDate: "2024-05-07T14:00:00" }
+              - column: { name: user_id, value: "00000000-0000-0000-0000-000000000007" }
+              - column: { name: message, value: "Notificación 7" }
+        - insert:
+            tableName: notifications
+            columns:
+              - column: { name: id, value: "00000008-0000-0000-0000-000000000008" }
+              - column: { name: created_at, valueDate: "2024-05-08T15:00:00" }
+              - column: { name: user_id, value: "00000000-0000-0000-0000-000000000008" }
+              - column: { name: message, value: "Notificación 8" }
+        - insert:
+            tableName: notifications
+            columns:
+              - column: { name: id, value: "00000009-0000-0000-0000-000000000009" }
+              - column: { name: created_at, valueDate: "2024-05-09T16:00:00" }
+              - column: { name: user_id, value: "00000000-0000-0000-0000-000000000009" }
+              - column: { name: message, value: "Notificación 9" }
+        - insert:
+            tableName: notifications
+            columns:
+              - column: { name: id, value: "00000010-0000-0000-0000-000000000010" }
+              - column: { name: created_at, valueDate: "2024-05-10T17:00:00" }
+              - column: { name: user_id, value: "00000000-0000-0000-0000-000000000010" }
+              - column: { name: message, value: "Notificación 10" }
+        - insert:
+            tableName: notifications
+            columns:
+              - column: { name: id, value: "00000011-0000-0000-0000-000000000011" }
+              - column: { name: created_at, valueDate: "2024-05-11T08:00:00" }
+              - column: { name: user_id, value: "00000000-0000-0000-0000-000000000011" }
+              - column: { name: message, value: "Notificación 11" }
+        - insert:
+            tableName: notifications
+            columns:
+              - column: { name: id, value: "00000012-0000-0000-0000-000000000012" }
+              - column: { name: created_at, valueDate: "2024-05-12T09:00:00" }
+              - column: { name: user_id, value: "00000000-0000-0000-0000-000000000012" }
+              - column: { name: message, value: "Notificación 12" }
+        - insert:
+            tableName: notifications
+            columns:
+              - column: { name: id, value: "00000013-0000-0000-0000-000000000013" }
+              - column: { name: created_at, valueDate: "2024-05-13T10:00:00" }
+              - column: { name: user_id, value: "00000000-0000-0000-0000-000000000013" }
+              - column: { name: message, value: "Notificación 13" }
+        - insert:
+            tableName: notifications
+            columns:
+              - column: { name: id, value: "00000014-0000-0000-0000-000000000014" }
+              - column: { name: created_at, valueDate: "2024-05-14T11:00:00" }
+              - column: { name: user_id, value: "00000000-0000-0000-0000-000000000014" }
+              - column: { name: message, value: "Notificación 14" }
+        - insert:
+            tableName: notifications
+            columns:
+              - column: { name: id, value: "00000015-0000-0000-0000-000000000015" }
+              - column: { name: created_at, valueDate: "2024-05-15T12:00:00" }
+              - column: { name: user_id, value: "00000000-0000-0000-0000-000000000015" }
+              - column: { name: message, value: "Notificación 15" }
+        - insert:
+            tableName: notifications
+            columns:
+              - column: { name: id, value: "00000016-0000-0000-0000-000000000016" }
+              - column: { name: created_at, valueDate: "2024-05-16T13:00:00" }
+              - column: { name: user_id, value: "00000000-0000-0000-0000-000000000016" }
+              - column: { name: message, value: "Notificación 16" }
+        - insert:
+            tableName: notifications
+            columns:
+              - column: { name: id, value: "00000017-0000-0000-0000-000000000017" }
+              - column: { name: created_at, valueDate: "2024-05-17T14:00:00" }
+              - column: { name: user_id, value: "00000000-0000-0000-0000-000000000017" }
+              - column: { name: message, value: "Notificación 17" }
+        - insert:
+            tableName: notifications
+            columns:
+              - column: { name: id, value: "00000018-0000-0000-0000-000000000018" }
+              - column: { name: created_at, valueDate: "2024-05-18T15:00:00" }
+              - column: { name: user_id, value: "00000000-0000-0000-0000-000000000018" }
+              - column: { name: message, value: "Notificación 18" }
+        - insert:
+            tableName: notifications
+            columns:
+              - column: { name: id, value: "00000019-0000-0000-0000-000000000019" }
+              - column: { name: created_at, valueDate: "2024-05-19T16:00:00" }
+              - column: { name: user_id, value: "00000000-0000-0000-0000-000000000019" }
+              - column: { name: message, value: "Notificación 19" }
+        - insert:
+            tableName: notifications
+            columns:
+              - column: { name: id, value: "00000020-0000-0000-0000-000000000020" }
+              - column: { name: created_at, valueDate: "2024-05-20T17:00:00" }
+              - column: { name: user_id, value: "00000000-0000-0000-0000-000000000020" }
+              - column: { name: message, value: "Notificación 20" }
