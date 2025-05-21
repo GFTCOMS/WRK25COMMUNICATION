@@ -8,14 +8,14 @@ import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
-public class LowStockNotificationProducer {
+public class NotificationProducer {
 
     private final RabbitTemplate rabbitTemplate;
 
     @Value("${exchange.coms}")
     private String exchange;
 
-    @Value("${routing-key.coms.stock.low}")
+    @Value("${routing-key.coms}")
     private String routingKey;
 
     public void publish(NotificationDTO notification) {

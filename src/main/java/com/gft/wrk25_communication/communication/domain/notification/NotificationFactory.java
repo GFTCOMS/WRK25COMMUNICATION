@@ -1,5 +1,6 @@
 package com.gft.wrk25_communication.communication.domain.notification;
 
+import com.gft.wrk25_communication.communication.domain.OrderId;
 import com.gft.wrk25_communication.communication.domain.ProductId;
 import com.gft.wrk25_communication.communication.domain.UserId;
 import org.springframework.stereotype.Component;
@@ -20,6 +21,13 @@ public class NotificationFactory {
 
         String message = String.format("The stock of the product \"%s\" is lower than: %d.", productId.id(), quantity);
 
+        return new Notification(userId, message);
+    }
+
+    public Notification createOrderStatusChangedNotification(UserId userId, OrderId orderId, String orderStatus) {
+        Assert.notNull(orderStatus, "Order status must not be null");
+
+        String message = String.format("The state of the order %s has changed to \"%s\".", orderId.id(), orderStatus.replace('_', ' '));
         return new Notification(userId, message);
     }
 

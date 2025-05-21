@@ -6,7 +6,7 @@ import com.gft.wrk25_communication.communication.domain.event.NotificationCreate
 import com.gft.wrk25_communication.communication.domain.notification.Notification;
 import com.gft.wrk25_communication.communication.domain.notification.NotificationFactory;
 import com.gft.wrk25_communication.communication.domain.notification.NotificationId;
-import com.gft.wrk25_communication.communication.infrastructure.messaging.producer.LowStockNotificationProducer;
+import com.gft.wrk25_communication.communication.infrastructure.messaging.producer.NotificationProducer;
 import org.instancio.Instancio;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -24,7 +24,7 @@ import static org.mockito.Mockito.verify;
 class NotificationEventHandlerTest {
 
     @Mock
-    private LowStockNotificationProducer lowStockNotificationProducer;
+    private NotificationProducer notificationProducer;
 
     @InjectMocks
     private NotificationEventHandler notificationEventHandler;
@@ -52,6 +52,6 @@ class NotificationEventHandlerTest {
                 notification.isImportant()
         );
 
-        verify(lowStockNotificationProducer, times(1)).publish(expectedNotification);
+        verify(notificationProducer, times(1)).publish(expectedNotification);
     }
 }
