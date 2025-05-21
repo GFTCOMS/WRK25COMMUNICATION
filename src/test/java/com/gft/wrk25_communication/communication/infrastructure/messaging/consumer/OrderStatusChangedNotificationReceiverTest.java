@@ -3,7 +3,6 @@ package com.gft.wrk25_communication.communication.infrastructure.messaging.consu
 import com.gft.wrk25_communication.communication.application.NotificationSaveUseCase;
 import com.gft.wrk25_communication.communication.application.dto.OrderStatusChangedNotificationDTO;
 import com.gft.wrk25_communication.communication.domain.OrderId;
-import com.gft.wrk25_communication.communication.domain.ProductId;
 import com.gft.wrk25_communication.communication.domain.UserId;
 import com.gft.wrk25_communication.communication.domain.notification.Notification;
 import com.gft.wrk25_communication.communication.domain.notification.NotificationFactory;
