@@ -55,7 +55,7 @@ jobs:
           DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
         run: |
           mvn clean verify \
-            -Dspring.datasource.url=jdbc:mysql://34.173.88.131:3306/testdb \
+            -Dspring.datasource.url=jdbc:mysql://34.173.88.131:3306/Communications \
             -Dspring.datasource.username=root \
             -Dspring.datasource.password=$DB_PASSWORD \
             -Dspring.jpa.hibernate.ddl-auto=update
