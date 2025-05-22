@@ -11,6 +11,7 @@ import java.util.UUID;
 public interface NotificationEntityRepository extends JpaRepository<NotificationEntity, UUID> {
 
     List<NotificationEntity> findAllByUserId(UUID userId);
+    void deleteAllByUserId(UUID userId);
 
     @Modifying
     @Query("UPDATE NotificationEntity n SET n.important = true WHERE n.id = :id")

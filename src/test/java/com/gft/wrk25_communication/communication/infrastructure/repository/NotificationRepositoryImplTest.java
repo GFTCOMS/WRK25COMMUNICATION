@@ -112,19 +112,25 @@ class NotificationRepositoryImplTest {
     }
 
     @Test
-    void deleteById() {
+    void testDeleteById() {
         repositoryToTest.deleteById(notifications.get(0).getId());
         verify(notificationEntityRepository, times(1)).deleteById(notificationEntities.get(0).getId());
     }
 
     @Test
-    void setAsImportant() {
+    void testDeleteAllByUserId() {
+        repositoryToTest.deleteAllByUserId(notifications.get(0).getUserId());
+        verify(notificationEntityRepository, times(1)).deleteAllByUserId(notificationEntities.get(0).getUserId());
+    }
+
+    @Test
+    void testSetAsImportant() {
         repositoryToTest.setAsImportant(notifications.get(0).getId());
         verify(notificationEntityRepository, times(1)).setImportantTrueWhereId(notificationEntities.get(0).getId());
     }
 
     @Test
-    void setAsNotImportant() {
+    void testSetAsNotImportant() {
         repositoryToTest.setAsNotImportant(notifications.get(0).getId());
         verify(notificationEntityRepository, times(1)).setImportantFalseWhereId(notificationEntities.get(0).getId());
     }
