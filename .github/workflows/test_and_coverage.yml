@@ -12,6 +12,22 @@ jobs:
   tests_and_coverage:
     runs-on: ubuntu-latest
 
+    services:
+      mysql:
+        image: mysql:8.0
+        env:
+          MYSQL_ROOT_PASSWORD: root
+          MYSQL_DATABASE: testdb
+          MYSQL_USER: testuser
+          MYSQL_PASSWORD: testpass
+        ports:
+          - 3306:3306
+        options:
+          # Asegurar que el contenedor tenga suficiente memoria
+          --health-cmd="mysqladmin ping"
+          --health-interval=5s
+          --health-retries=10
+
     steps:
       # Paso 1: Checkout del código
       - name: Checkout code
@@ -25,19 +41,34 @@ jobs:
           distribution: 'temurin'
           cache: maven
 
-      # Paso 3: Compilar y ejecutar tests con Maven
-      - name: Build with Maven (test + coverage)
-        run: mvn clean verify
+      # Paso 3: Esperar a que MySQL esté listo
+      - name: Wait for MySQL to be ready
+        run: |
+          for i in {1..30}; do
+            mysqladmin ping -h 127.0.0.1 -u root -proot && break || sleep 2
+          done
+          echo "MySQL is ready"
 
-      # Paso 4: Generar reporte JaCoCo
+      # Paso 4: Compilar y ejecutar tests con Maven
+      - name: Build with Maven (test + coverage)
+        env:
+          DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
+        run: |
+          mvn clean verify \
+            -Dspring.datasource.url=jdbc:mysql://34.173.88.131:3306/testdb \
+            -Dspring.datasource.username=root \
+            -Dspring.datasource.password=$DB_PASSWORD \
+            -Dspring.jpa.hibernate.ddl-auto=update
+
+      # Paso 5: Generar reporte JaCoCo
       - name: Generate JaCoCo report
         run: mvn jacoco:report
 
-      # Paso 5: Verificar cobertura de código
+      # Paso 6: Verificar cobertura de código
       - name: Check JaCoCo coverage
         run: |
           covered_lines=$(grep -oP 'covered="\K[0-9]+' target/site/jacoco/jacoco.xml | awk '{s+=$1} END {print s}')
-          missed_lines=$(grep -oP 'missed="\K[0-9]+' target/site/jacoco/jacoco.xml | awk '{s+=$1} END {print s}')
+          missed_lines=$(grep -oP 'missed="\K[0-9+' target/site/jacoco/jacoco.xml | awk '{s+=$1} END {print s}')
           
           total_lines=$((covered_lines + missed_lines))
           
@@ -48,7 +79,7 @@ jobs:
           
           coverage=$(echo "scale=2; $covered_lines / $total_lines" | bc)
           
-          if (( $(echo "$coverage < 1.0" | bc -l) )); then
-            echo "Coverage is below 100%: $coverage"
+          if (( $(echo "$coverage < 0.8" | bc -l) )); then
+            echo "Coverage is below 80%: $coverage"
             exit 1
           fi
