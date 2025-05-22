@@ -12,22 +12,6 @@ jobs:
   tests_and_coverage:
     runs-on: ubuntu-latest
 
-    services:
-      mysql:
-        image: mysql:8.0
-        env:
-          MYSQL_ROOT_PASSWORD: root
-          MYSQL_DATABASE: Communications
-          MYSQL_USER: root
-          MYSQL_PASSWORD: ${{ secrets.DB_PASSWORD }}
-        ports:
-          - 3306:3306
-        options:
-          # Asegurar que el contenedor tenga suficiente memoria
-          --health-cmd="mysqladmin ping"
-          --health-interval=5s
-          --health-retries=10
-
     steps:
       # Paso 1: Checkout del código
       - name: Checkout code
@@ -41,34 +25,28 @@ jobs:
           distribution: 'temurin'
           cache: maven
 
-      # Paso 3: Esperar a que MySQL esté listo
-      - name: Wait for MySQL to be ready
-        run: |
-          for i in {1..30}; do
-            mysqladmin ping -h 127.0.0.1 -u root -proot && break || sleep 2
-          done
-          echo "MySQL is ready"
-
-      # Paso 4: Compilar y ejecutar tests con Maven
+      # Paso 3: Compilar y ejecutar tests con Maven
       - name: Build with Maven (test + coverage)
         env:
+          DB_URL: ${{ secrets.TEST_DB_URL }}
+          DB_USER: ${{ secrets.DB_USER }}
           DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
         run: |
           mvn clean verify \
-            -Dspring.datasource.url=jdbc:mysql://34.173.88.131:3306/Communications \
-            -Dspring.datasource.username=root \
+            -Dspring.datasource.url=$TEST_DB_URL \
+            -Dspring.datasource.username=$DB_USER \
             -Dspring.datasource.password=$DB_PASSWORD \
             -Dspring.jpa.hibernate.ddl-auto=update
 
-      # Paso 5: Generar reporte JaCoCo
+      # Paso 4: Generar reporte JaCoCo
       - name: Generate JaCoCo report
         run: mvn jacoco:report
 
-      # Paso 6: Verificar cobertura de código
+      # Paso 5: Verificar cobertura de código
       - name: Check JaCoCo coverage
         run: |
           covered_lines=$(grep -oP 'covered="\K[0-9]+' target/site/jacoco/jacoco.xml | awk '{s+=$1} END {print s}')
-          missed_lines=$(grep -oP 'missed="\K[0-9+' target/site/jacoco/jacoco.xml | awk '{s+=$1} END {print s}')
+          missed_lines=$(grep -oP 'missed="\K[0-9]+' target/site/jacoco/jacoco.xml | awk '{s+=$1} END {print s}')
           
           total_lines=$((covered_lines + missed_lines))
           
