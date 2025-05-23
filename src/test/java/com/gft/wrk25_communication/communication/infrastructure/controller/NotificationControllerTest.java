@@ -34,13 +34,7 @@ class NotificationControllerTest {
     private NotificationDeleteByIdUseCase notificationDeleteByIdUseCase;
 
     @Mock
-    private NotificationExistsByIdUseCase notificationExistsByIdUseCase;
-
-    @Mock
     private NotificationSetImportantByIdUseCase notificationSetImportantByIdUseCase;
-
-    @Mock
-    private NotificationSetNotImportantByIdUseCase notificationSetNotImportantByIdUseCase;
 
     @InjectMocks
     private NotificationController notificationController;
@@ -75,15 +69,11 @@ class NotificationControllerTest {
 
         NotificationId notificationId = notificationList.get(0).getId();
 
-        when(notificationExistsByIdUseCase.execute(notificationId)).thenReturn(true);
-
         NotificationDTO notificationDTO = new NotificationDTO(null, null, null, null, true);
 
         notificationController.updateNotification(notificationId.id(), notificationDTO);
 
-        verify(notificationExistsByIdUseCase, times(1)).execute(notificationId);
-        verify(notificationSetImportantByIdUseCase, times(1)).execute(notificationId);
-        verify(notificationSetNotImportantByIdUseCase, times(0)).execute(notificationId);
+        verify(notificationSetImportantByIdUseCase, times(1)).execute(notificationId, notificationDTO.important());
     }
 
     @Test
@@ -91,29 +81,10 @@ class NotificationControllerTest {
 
         NotificationId notificationId = notificationList.get(0).getId();
 
-        when(notificationExistsByIdUseCase.execute(notificationId)).thenReturn(true);
-
         NotificationDTO notificationDTO = new NotificationDTO(null, null, null, null, false);
         notificationController.updateNotification(notificationId.id(), notificationDTO);
 
-        verify(notificationExistsByIdUseCase, times(1)).execute(notificationId);
-        verify(notificationSetImportantByIdUseCase, times(0)).execute(notificationId);
-        verify(notificationSetNotImportantByIdUseCase, times(1)).execute(notificationId);
-    }
-
-    @Test
-    void updateNotificationIdNotFound() {
-
-        NotificationId notificationId = notificationList.get(0).getId();
-
-        when(notificationExistsByIdUseCase.execute(notificationId)).thenReturn(false);
-
-        NotificationDTO notificationDTO = new NotificationDTO(null, null, null, null, null);
-        notificationController.updateNotification(notificationId.id(), notificationDTO);
-
-        verify(notificationExistsByIdUseCase, times(1)).execute(notificationId);
-        verify(notificationSetImportantByIdUseCase, times(0)).execute(notificationId);
-        verify(notificationSetNotImportantByIdUseCase, times(0)).execute(notificationId);
+        verify(notificationSetImportantByIdUseCase, times(1)).execute(notificationId, notificationDTO.important());
     }
 
     @Test
@@ -121,25 +92,10 @@ class NotificationControllerTest {
 
         NotificationId notificationId = notificationList.get(0).getId();
 
-        when(notificationExistsByIdUseCase.execute(notificationId)).thenReturn(true);
 
         notificationController.deleteNotification(notificationId.id());
 
-        verify(notificationExistsByIdUseCase, times(1)).execute(notificationId);
         verify(notificationDeleteByIdUseCase, times(1)).execute(notificationId);
-    }
-
-    @Test
-    void deleteNotificationIdNotFound() {
-
-        NotificationId notificationId = notificationList.get(0).getId();
-
-        when(notificationExistsByIdUseCase.execute(notificationId)).thenReturn(false);
-
-        notificationController.deleteNotification(notificationId.id());
-
-        verify(notificationExistsByIdUseCase, times(1)).execute(notificationId);
-        verify(notificationDeleteByIdUseCase, times(0)).execute(notificationId);
     }
 
     private void initObjects() {

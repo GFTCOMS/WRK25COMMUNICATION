@@ -68,13 +68,14 @@ public class NotificationRepositoryImpl implements NotificationRepository {
 
     @Override
     @Transactional
-    public void setAsImportant(NotificationId id) {
-        repository.setImportantTrueWhereId(id.id());
+    public void deleteAllByUserId(UserId userId) {
+        repository.deleteAllByUserId(userId.id());
     }
 
     @Override
-    public void setAsNotImportant(NotificationId id) {
-        repository.setImportantFalseWhereId(id.id());
+    @Transactional
+    public void setImportant(NotificationId id, boolean important) {
+        repository.setImportant(id.id(), important);
     }
 
 }

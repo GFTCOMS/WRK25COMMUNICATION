@@ -19,7 +19,6 @@ import java.util.List;
 import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
@@ -67,27 +66,6 @@ class NotificationRepositoryImplTest {
     }
 
     @Test
-    void testExistsById() {
-
-        NotificationEntity entity = notificationEntities.get(0);
-
-        when(notificationEntityRepository.existsById(entity.getId())).thenReturn(true);
-
-        boolean notificationExists = repositoryToTest.existsById(new NotificationId(entity.getId()));
-
-        assertTrue(notificationExists);
-    }
-    @Test
-    void testFindByIdWithIdNull() {
-
-        String message = "id cannot be null";
-
-         IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> repositoryToTest.existsById(new NotificationId(null)));
-
-        assertEquals(message, exception.getMessage());
-    }
-
-    @Test
     void testSave() {
 
         NotificationEntity entity = notificationEntities.get(0);
@@ -112,21 +90,40 @@ class NotificationRepositoryImplTest {
     }
 
     @Test
-    void deleteById() {
+    void testDeleteById() {
         repositoryToTest.deleteById(notifications.get(0).getId());
         verify(notificationEntityRepository, times(1)).deleteById(notificationEntities.get(0).getId());
     }
 
     @Test
-    void setAsImportant() {
-        repositoryToTest.setAsImportant(notifications.get(0).getId());
-        verify(notificationEntityRepository, times(1)).setImportantTrueWhereId(notificationEntities.get(0).getId());
+    void testExistsById() {
+
+        NotificationId notificationId = new NotificationId(notificationEntities.get(0).getId());
+
+        when(notificationEntityRepository.existsById(notificationId.id())).thenReturn(true);
+
+        boolean response = repositoryToTest.existsById(notificationId);
+
+        verify(notificationEntityRepository, times(1)).existsById(notificationEntities.get(0).getId());
+        assertTrue(response);
     }
 
     @Test
-    void setAsNotImportant() {
-        repositoryToTest.setAsNotImportant(notifications.get(0).getId());
-        verify(notificationEntityRepository, times(1)).setImportantFalseWhereId(notificationEntities.get(0).getId());
+    void testDeleteAllByUserId() {
+        repositoryToTest.deleteAllByUserId(notifications.get(0).getUserId());
+        verify(notificationEntityRepository, times(1)).deleteAllByUserId(notificationEntities.get(0).getUserId());
+    }
+
+    @Test
+    void testSetAsImportant() {
+        repositoryToTest.setImportant(notifications.get(0).getId(), true);
+        verify(notificationEntityRepository, times(1)).setImportant(notificationEntities.get(0).getId(), true);
+    }
+
+    @Test
+    void testSetAsNotImportant() {
+        repositoryToTest.setImportant(notifications.get(0).getId(), false);
+        verify(notificationEntityRepository, times(1)).setImportant(notificationEntities.get(0).getId(), false);
     }
 
     private void initObjects() {

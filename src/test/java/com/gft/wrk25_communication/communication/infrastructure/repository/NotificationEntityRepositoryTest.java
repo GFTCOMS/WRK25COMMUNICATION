@@ -30,7 +30,7 @@ class NotificationEntityRepositoryTest {
         entityManager.refresh(entityToUpdate);
         notificationId = entityToUpdate.getId();
 
-        repositoryToTest.setImportantTrueWhereId(notificationId);
+        repositoryToTest.setImportant(notificationId, true);
         entityManager.refresh(entityToUpdate);
 
         NotificationEntity entityUpdated = entityManager.find(NotificationEntity.class, notificationId);
@@ -49,7 +49,7 @@ class NotificationEntityRepositoryTest {
         entityManager.refresh(entityToUpdate);
         notificationId = entityToUpdate.getId();
 
-        repositoryToTest.setImportantFalseWhereId(notificationId);
+        repositoryToTest.setImportant(notificationId, false);
         entityManager.refresh(entityToUpdate);
 
         NotificationEntity entityUpdated = entityManager.find(NotificationEntity.class, notificationId);
