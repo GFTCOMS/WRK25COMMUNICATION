@@ -16,8 +16,6 @@ public interface NotificationRepository {
 
     void deleteAllByUserId(UserId id);
 
-    void setAsImportant(NotificationId id);
-
-    void setAsNotImportant(NotificationId id);
+    void setImportant(NotificationId id, boolean important);
 
 }

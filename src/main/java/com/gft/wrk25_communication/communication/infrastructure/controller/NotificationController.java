@@ -5,6 +5,7 @@ import com.gft.wrk25_communication.communication.application.dto.NotificationDTO
 import com.gft.wrk25_communication.communication.domain.UserId;
 import com.gft.wrk25_communication.communication.domain.notification.NotificationId;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -18,9 +19,7 @@ public class NotificationController {
 
     private final NotificationGetAllUseCase notificationGetAllUseCase;
     private final NotificationDeleteByIdUseCase notificationDeleteByIdUseCase;
-    private final NotificationExistsByIdUseCase notificationExistsByIdUseCase;
     private final NotificationSetImportantByIdUseCase notificationSetImportantByIdUseCase;
-    private final NotificationSetNotImportantByIdUseCase notificationSetNotImportantByIdUseCase;
 
     @GetMapping("/{userId}")
     public ResponseEntity<List<NotificationDTO>> getAllNotificationsFromUserId(@PathVariable String userId) {
@@ -28,36 +27,15 @@ public class NotificationController {
     }
 
     @PatchMapping("/{id}")
-    public ResponseEntity<Void> updateNotification(@PathVariable("id") UUID id, @RequestBody NotificationDTO notificationDTO) {
-
-        NotificationId notificationId = new NotificationId(id);
-
-        if (!notificationExistsByIdUseCase.execute(notificationId)) {
-            return ResponseEntity.notFound().build();
-        }
-
-        if (notificationDTO.important()) {
-            notificationSetImportantByIdUseCase.execute(notificationId);
-        }
-
-        if (!notificationDTO.important()) {
-            notificationSetNotImportantByIdUseCase.execute(notificationId);
-        }
-
-        return ResponseEntity.noContent().build();
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void updateNotification(@PathVariable("id") UUID id, @RequestBody NotificationDTO notificationDTO) {
+            notificationSetImportantByIdUseCase.execute(new NotificationId(id), notificationDTO.important());
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Object> deleteNotification(@PathVariable("id") UUID id) {
-
-        NotificationId notificationId = new NotificationId(id);
-
-        if(notificationExistsByIdUseCase.execute(notificationId)) {
-            notificationDeleteByIdUseCase.execute(notificationId);
-            return ResponseEntity.noContent().build();
-        }
-
-        return ResponseEntity.notFound().build();
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void deleteNotification(@PathVariable("id") UUID id) {
+        notificationDeleteByIdUseCase.execute(new NotificationId(id));
     }
 
 }
