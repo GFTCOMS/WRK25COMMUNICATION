@@ -4,32 +4,26 @@ import com.gft.wrk25_communication.communication.domain.UserId;
 import com.gft.wrk25_communication.communication.domain.notification.Notification;
 import com.gft.wrk25_communication.communication.domain.notification.NotificationFactory;
 import com.gft.wrk25_communication.communication.domain.notification.NotificationId;
-import com.gft.wrk25_communication.communication.infrastructure.repository.NotificationEntityRepository;
 import com.gft.wrk25_communication.communication.infrastructure.repository.NotificationRepositoryImpl;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
+import org.instancio.Instancio;
 import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Import;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
 
-import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
 
-@Transactional
 @DataJpaTest
 @Import(NotificationRepositoryImpl.class)
 class NotificationRepositoryIT {
-
-    @Autowired
-    private NotificationEntityRepository notificationEntityRepository;
 
     @TestConfiguration
     static class TestConfig {
@@ -48,20 +42,18 @@ class NotificationRepositoryIT {
     @Autowired
     private NotificationFactory notificationFactory;
 
-    private UUID userUuid;
     private UserId userId;
-    private UUID notificationUuid;
     private NotificationId notificationId;
     private LocalDateTime createdAt;
     private Notification notification;
 
     @BeforeEach
-    void setUp() {
-        userUuid = UUID.randomUUID();
+    void initData() {
+        UUID userUuid = UUID.randomUUID();
         userId = new UserId(userUuid);
-        notificationUuid = UUID.randomUUID();
+        UUID notificationUuid = UUID.randomUUID();
         notificationId = new NotificationId(notificationUuid);
-        createdAt = LocalDateTime.now();
+        createdAt = Instancio.create(LocalDateTime.class);
         notification = notificationFactory.reinstantiate(notificationId, createdAt, userId, "Mensaje test", true);
     }
 
