@@ -8,6 +8,7 @@ import com.gft.wrk25_communication.communication.infrastructure.repository.Notif
 import com.gft.wrk25_communication.communication.infrastructure.repository.NotificationRepositoryImpl;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
+import org.instancio.Instancio;
 import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
@@ -56,12 +57,12 @@ class NotificationRepositoryIT {
     private Notification notification;
 
     @BeforeEach
-    void setUp() {
+    void initData() {
         userUuid = UUID.randomUUID();
         userId = new UserId(userUuid);
         notificationUuid = UUID.randomUUID();
         notificationId = new NotificationId(notificationUuid);
-        createdAt = LocalDateTime.now();
+        createdAt = Instancio.create(LocalDateTime.class);
         notification = notificationFactory.reinstantiate(notificationId, createdAt, userId, "Mensaje test", true);
     }
 
