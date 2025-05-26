@@ -2,7 +2,7 @@
 FROM eclipse-temurin:17-jre-alpine
 
 # Copiamos el .jar generado por Maven
-COPY target/WRK25_COMMUNICATION-0.0.1-SNAPSHOT.jar app.jar
+COPY ./target/WRK25_COMMUNICATION-0.0.1-SNAPSHOT.jar app.jar
 
 EXPOSE 8080
 
