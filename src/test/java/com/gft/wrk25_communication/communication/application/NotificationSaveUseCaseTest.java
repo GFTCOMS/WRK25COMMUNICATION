@@ -42,7 +42,6 @@ class NotificationSaveUseCaseTest {
                 Instancio.create(Boolean.class)
         );
 
-        // 👇 Simular que el repositorio retorna la misma notificación
         when(repository.save(notification)).thenReturn(notification);
 
         useCaseToTest.execute(notification);
