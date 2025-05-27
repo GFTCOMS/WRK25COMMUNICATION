@@ -15,7 +15,7 @@ public class NotificationDeleteByIdUseCase {
     private final NotificationRepository notificationRepository;
 
     public void execute(NotificationId notificationId) {
-        log.info("Intentando eliminar la notificación con ID: {}", notificationId.id());
+        log.info("Intentando eliminar la notificación con el ID: {}", notificationId.id());
 
         if (!notificationRepository.existsById(notificationId)) {
             log.warn("No se encontró la notificación con ID: {}", notificationId.id());
