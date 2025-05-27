@@ -4,18 +4,24 @@ import com.gft.wrk25_communication.communication.application.dto.NotificationDTO
 import com.gft.wrk25_communication.communication.domain.UserId;
 import com.gft.wrk25_communication.communication.domain.notification.NotificationRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class NotificationGetAllUseCase {
 
     private final NotificationRepository notificationRepository;
 
     public List<NotificationDTO> execute(UserId userId) {
-        return notificationRepository.findAllByUserId(userId).stream().map(notification ->
+        log.info("Ejecutando caso de uso NotificationGetAllUseCase para userId={}", userId.id());
+
+       List<NotificationDTO> notifications = notificationRepository.findAllByUserId(userId)
+               .stream()
+               .map(notification ->
                 new NotificationDTO(
                         notification.getId().id(),
                         notification.getCreatedAt(),
@@ -23,6 +29,8 @@ public class NotificationGetAllUseCase {
                         notification.getMessage(),
                         notification.isImportant()
                 )).toList();
+       log.info("Notificaciones encontradas para el usuario {}: {}", userId.id(), notifications.size());
+       return notifications;
     }
 
 }
