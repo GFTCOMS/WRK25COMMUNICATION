@@ -49,5 +49,4 @@ jobs:
           service: ${{ secrets.COMS_RUN_SERVICE }}
           image: europe-southwest1-docker.pkg.dev/${{ secrets.GCP_PROJECT_ID }}/coms-repository/coms-image:latest
           region: ${{ secrets.GCP_REGION }}
-          credentials: ${{ secrets.COMS_KEY }}
-          allow_unauthenticated: true
+          flags: --allow-unauthenticated
