@@ -15,6 +15,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.time.LocalDateTime;
+
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
@@ -33,7 +34,6 @@ class NotificationSaveUseCaseTest {
 
     @Test
     void testExecute() {
-
         Notification notification = workingFactory.reinstantiate(
                 new NotificationId(),
                 Instancio.create(LocalDateTime.class),
@@ -42,11 +42,13 @@ class NotificationSaveUseCaseTest {
                 Instancio.create(Boolean.class)
         );
 
+        // 👇 Simular que el repositorio retorna la misma notificación
+        when(repository.save(notification)).thenReturn(notification);
+
         useCaseToTest.execute(notification);
 
         verify(repository, times(1)).save(notification);
         verify(eventPublisher, times(1))
                 .publishNotificationCreatedEvent(any(NotificationCreatedEvent.class));
     }
-
 }
