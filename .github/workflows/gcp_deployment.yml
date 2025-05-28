@@ -42,6 +42,16 @@ jobs:
           docker push \
             europe-southwest1-docker.pkg.dev/${{ secrets.GCP_PROJECT_ID }}/coms-repository/coms-image:latest
 
+      # Quitar antes del merge
+      - name: Debug service name
+        run: |
+          if [ -z "${{ secrets.COMS_RUN_SERVICE }}" ]; then
+            echo "❌ COMS_RUN_SERVICE is empty or undefined"
+            exit 1
+          else
+            echo "✅ COMS_RUN_SERVICE is set"
+          fi  
+
       # Paso 6: Desplegar en Google Cloud Run
       - name: Deploy to Cloud Run
         uses: google-github-actions/deploy-cloudrun@v1
