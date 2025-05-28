@@ -39,4 +39,13 @@ public class NotificationFactory {
         return new Notification(userId, message);
     }
 
+    public Notification createProductRestockNotification(UserId userId, ProductDTO product) {
+
+        Assert.notNull(product, "Product must not be null");
+        String message = String.format("The product \"%s\" has been re-stocked with %s units.", product.name(), product.inventoryData().stock());
+        return new Notification(userId, message);
+    }
+
+
+
 }
