@@ -5,6 +5,7 @@ import com.gft.wrk25_communication.communication.domain.notification.Notificatio
 import com.gft.wrk25_communication.communication.infrastructure.error.ErrorResponse;
 import com.gft.wrk25_communication.communication.infrastructure.exception.NotificationNotFoundException;
 import com.gft.wrk25_communication.communication.infrastructure.exception.ProductNotFoundException;
+import org.instancio.Instancio;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
@@ -66,7 +67,7 @@ class CustomExceptionHandlerTest {
     void testHandleHttpMessageNotReadableExceptionException() {
 
         ResponseEntity<ErrorResponse> response = customExceptionHandler
-                .handleHttpMessageNotReadableExceptionException(new HttpMessageNotReadableException(""));
+                .handleHttpMessageNotReadableExceptionException(Instancio.create(HttpMessageNotReadableException.class));
 
         ErrorResponse errorResponse = new ErrorResponse("The body of the request must not be empty");
 

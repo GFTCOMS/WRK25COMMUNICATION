@@ -1,7 +1,7 @@
 package com.gft.wrk25_communication.communication.application.dto;
 
 import org.instancio.Instancio;
-import org.junit.jupiter.api.Test;;
+import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
 

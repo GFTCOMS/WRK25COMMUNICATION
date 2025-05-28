@@ -87,7 +87,7 @@ class ApiClientImplTest {
     }
 
     @Test
-    void testGetProductByIdReturnsNull() throws Exception {
+    void testGetProductByIdReturnsNull() {
 
         mockWebServer.enqueue(new MockResponse()
                 .setHeader("Content-Type", "application/json"));

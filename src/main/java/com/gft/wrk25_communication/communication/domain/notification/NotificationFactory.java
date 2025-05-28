@@ -2,7 +2,6 @@ package com.gft.wrk25_communication.communication.domain.notification;
 
 import com.gft.wrk25_communication.communication.application.dto.ProductDTO;
 import com.gft.wrk25_communication.communication.domain.OrderId;
-import com.gft.wrk25_communication.communication.domain.ProductId;
 import com.gft.wrk25_communication.communication.domain.UserId;
 import org.springframework.stereotype.Component;
 import org.springframework.util.Assert;
