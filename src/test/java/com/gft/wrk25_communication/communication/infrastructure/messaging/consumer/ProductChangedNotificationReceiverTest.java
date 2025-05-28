@@ -66,6 +66,26 @@ class ProductChangedNotificationReceiverTest {
     }
 
     @Test
+    void testReceiveUsersEmpty() {
+
+        ProductDTO product = Instancio.create(ProductDTO.class);
+        ProductId productId = new ProductId(product.id());
+
+        ProductStockChangedNotificationDTO notification = new ProductStockChangedNotificationDTO(
+                product.id(),
+                product.inventoryData().stock()
+        );
+
+        when(apiClient.getProductById(productId)).thenReturn(Instancio.create(ProductDTO.class));
+
+        when(apiClient.getUsersThatHaveProductInFavorites(productId)).thenReturn(List.of());
+
+        receiver.receive(notification);
+
+        verify(notificationSaveUseCase, times(0)).execute(any(Notification.class));
+    }
+
+    @Test
     void testReceiveProductIdNotFound() {
 
         ProductDTO product = Instancio.create(ProductDTO.class);

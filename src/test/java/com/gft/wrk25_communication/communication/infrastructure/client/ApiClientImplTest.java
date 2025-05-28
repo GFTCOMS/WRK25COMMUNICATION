@@ -56,6 +56,21 @@ class ApiClientImplTest {
     }
 
     @Test
+    void testGetUsersThatHaveProductInFavoritesUsersNull() throws Exception {
+
+        List<UUID> users = null;
+
+        String response = objectMapper.writeValueAsString(users);
+
+        mockWebServer.enqueue(new MockResponse()
+                .setBody(response)
+                .setHeader("Content-Type", "application/json"));
+
+        List<UserId> actualResponse = apiClient.getUsersThatHaveProductInFavorites(new ProductId(1L));
+        assertEquals(List.of(), actualResponse);
+    }
+
+    @Test
     void testGetUsersThatHaveProductInFavoritesReturnsNone() throws Exception {
 
         List<UUID> users = List.of();

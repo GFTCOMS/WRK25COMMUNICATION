@@ -42,7 +42,7 @@ public class ApiClientImpl implements ApiClient {
                 .collectList()
                 .block();
 
-        if (users == null || users.isEmpty()) {
+        if (users.isEmpty()) {
             log.error("Usuarios no encontrados con el producto con id {}", productId.id());
             return List.of();
         }

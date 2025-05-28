@@ -10,6 +10,7 @@ import com.gft.wrk25_communication.communication.domain.notification.Notificatio
 import com.gft.wrk25_communication.communication.domain.notification.NotificationFactory;
 import com.gft.wrk25_communication.communication.infrastructure.exception.ProductNotFoundException;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.stereotype.Component;
 
@@ -17,6 +18,7 @@ import java.util.List;
 
 @Component
 @RequiredArgsConstructor
+@Slf4j
 public class ProductChangedNotificationReceiver {
 
     private final ApiClient apiClient;
@@ -26,6 +28,8 @@ public class ProductChangedNotificationReceiver {
     @RabbitListener(queues = "${queue.product.stock.changed}")
     public void receive(ProductStockChangedNotificationDTO notification) {
 
+        log.info("Recibida notificación de ProductStockChangedNotification: productId={}, stock={}",
+                notification.id(), notification.stock());
         ProductId productId = new ProductId(notification.id());
 
         ProductDTO product = apiClient.getProductById(productId);
