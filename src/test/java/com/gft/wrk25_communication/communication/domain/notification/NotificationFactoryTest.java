@@ -96,4 +96,24 @@ class NotificationFactoryTest {
         assertEquals(notification.getUserId(), notificationToAssert.getUserId());
         assertEquals(message, notificationToAssert.getMessage());
     }
+
+    @Test
+    void testCreateProductRestockNotification() {
+
+        UserId userId = new UserId(UUID.randomUUID());
+        ProductDTO productDTO = Instancio.create(ProductDTO.class);
+
+        String message = String.format("The product \"%s\" has been re-stocked with %s units.", productDTO.name(), productDTO.inventoryData().stock());
+
+        Notification notification = new Notification(userId, message);
+
+        NotificationFactory notificationFactory = new NotificationFactory();
+        Notification notificationToAssert = notificationFactory.createProductRestockNotification(userId, productDTO);
+
+        assertNotNull(notificationToAssert);
+        assertNotNull(notificationToAssert.getId());
+        assertNotNull(notificationToAssert.getCreatedAt());
+        assertEquals(notification.getUserId(), notificationToAssert.getUserId());
+        assertEquals(message, notificationToAssert.getMessage());
+    }
 }
