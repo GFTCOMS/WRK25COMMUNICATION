@@ -1,8 +1,9 @@
 package com.gft.wrk25_communication.communication.domain.notification;
 
+import com.gft.wrk25_communication.communication.application.dto.ProductDTO;
 import com.gft.wrk25_communication.communication.domain.OrderId;
-import com.gft.wrk25_communication.communication.domain.ProductId;
 import com.gft.wrk25_communication.communication.domain.UserId;
+import org.instancio.Instancio;
 import org.junit.jupiter.api.Test;
 
 import java.time.LocalDateTime;
@@ -40,15 +41,15 @@ class NotificationFactoryTest {
     void testCreateProductStockChanged() {
 
         UserId userId = new UserId(UUID.randomUUID());
-        ProductId productId = new ProductId(3L);
-        Integer quantity = 4;
+        ProductDTO productDTO = Instancio.create(ProductDTO.class);
 
-        String message = "The stock of the product \"3\" is lower than: 4.";
+        String message = "The stock of the product \"" + productDTO.name() + "\" is lower than: "+ productDTO.inventoryData().stock() + ".";
 
         Notification notification = new Notification(userId, message);
 
         NotificationFactory notificationFactory = new NotificationFactory();
-        Notification notificationToAssert = notificationFactory.createLowStockNotification(userId, productId, quantity);
+
+        Notification notificationToAssert = notificationFactory.createLowStockNotification(userId, productDTO);
 
         assertNotNull(notificationToAssert);
         assertNotNull(notificationToAssert.getId());
@@ -62,7 +63,7 @@ class NotificationFactoryTest {
 
         UserId userId = new UserId(UUID.randomUUID());
         OrderId orderId = new OrderId(UUID.randomUUID());
-        String message = String.format("The state of the order %s has changed to \"%s\".", orderId.id(), "IN DELIVERY");
+        String message = String.format("The state of the order \"%s\" has changed to %s.", orderId.id(), "IN DELIVERY");
 
         Notification notification = new Notification(userId, message);
 
@@ -76,4 +77,23 @@ class NotificationFactoryTest {
         assertEquals(message, notificationToAssert.getMessage());
     }
 
+    @Test
+    void testCreateProductChangedNotification() {
+
+        UserId userId = new UserId(UUID.randomUUID());
+        ProductDTO productDTO = Instancio.create(ProductDTO.class);
+
+        String message = String.format("The product \"%s\" has changed the stock to %s.", productDTO.name(), productDTO.inventoryData().stock());
+
+        Notification notification = new Notification(userId, message);
+
+        NotificationFactory notificationFactory = new NotificationFactory();
+        Notification notificationToAssert = notificationFactory.createProductChangedNotification(userId, productDTO);
+
+        assertNotNull(notificationToAssert);
+        assertNotNull(notificationToAssert.getId());
+        assertNotNull(notificationToAssert.getCreatedAt());
+        assertEquals(notification.getUserId(), notificationToAssert.getUserId());
+        assertEquals(message, notificationToAssert.getMessage());
+    }
 }

@@ -25,7 +25,7 @@ public class NotificationController {
 
     @GetMapping("/{userId}")
     public ResponseEntity<List<NotificationDTO>> getAllNotificationsFromUserId(@PathVariable String userId) {
-        log.info("Received GET /notifications for user {}", userId);
+        log.info("GET /notifications/{}", userId);
         return ResponseEntity.ok(notificationGetAllUseCase.execute(new UserId(UUID.fromString(userId))));
     }
 
