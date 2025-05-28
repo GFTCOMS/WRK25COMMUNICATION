@@ -43,7 +43,7 @@ public class ProductRestockChangedNotificationReceiver {
 
         if (!users.isEmpty()) {
             users.forEach(userId -> {
-                Notification notificationToSave = notificationFactory.createProductChangedNotification(
+                Notification notificationToSave = notificationFactory.createProductRestockNotification(
                         userId,
                         product
                 );

@@ -57,13 +57,13 @@ class ProductRestockNotificationReceiverTest {
 
         when(apiClient.getUsersThatHaveProductInFavorites(productId)).thenReturn(List.of(userId));
 
-        when(notificationFactory.createProductChangedNotification(userId, product)).thenReturn(notificationToReturn);
+        when(notificationFactory.createProductRestockNotification(userId, product)).thenReturn(notificationToReturn);
 
         receiver.receive(notification);
 
         verify(apiClient, times(1)).getProductById(productId);
         verify(apiClient, times(1)).getUsersThatHaveProductInFavorites(productId);
-        verify(notificationFactory, times(1)).createProductChangedNotification(userId, product);
+        verify(notificationFactory, times(1)).createProductRestockNotification(userId, product);
         verify(notificationSaveUseCase,times(1)).execute(notificationToReturn);
     }
 
