@@ -21,7 +21,7 @@ public class NotificationProducer {
     private String routingKey;
 
     public void publish(NotificationDTO notification) {
-        log.info("Publishing notification to RabbitMQ. Exchange: {}, RoutingKey: {}, Notification: {}",
+        log.info("Publicando notificación en RabbitMQ. Exchange: {}, RoutingKey: {}, Notification: {}",
                 exchange, routingKey, notification);
 
         rabbitTemplate.convertAndSend(exchange, routingKey, notification);

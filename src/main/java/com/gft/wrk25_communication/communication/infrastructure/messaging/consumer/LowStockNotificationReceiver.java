@@ -2,6 +2,8 @@ package com.gft.wrk25_communication.communication.infrastructure.messaging.consu
 
 import com.gft.wrk25_communication.communication.application.NotificationSaveUseCase;
 import com.gft.wrk25_communication.communication.application.dto.LowStockNotificationDTO;
+import com.gft.wrk25_communication.communication.application.dto.ProductDTO;
+import com.gft.wrk25_communication.communication.application.web.ApiClient;
 import com.gft.wrk25_communication.communication.domain.ProductId;
 import com.gft.wrk25_communication.communication.domain.UserId;
 import com.gft.wrk25_communication.communication.domain.notification.Notification;
@@ -16,20 +18,23 @@ import org.springframework.stereotype.Component;
 @Slf4j
 public class LowStockNotificationReceiver {
 
+    private final ApiClient apiClient;
     private final NotificationSaveUseCase notificationSaveUseCase;
     private final NotificationFactory notificationFactory;
 
     @RabbitListener(queues = "${queue.product.stock.low}")
     public void receive(LowStockNotificationDTO notification) {
-        log.info("Received LowStockNotification: userId={}, productId={}, quantity={}",
-                notification.userId(), notification.productId(), notification.quantity());
+        log.info("Recibida notificación de LowStockNotification: userId={}, productId={}, stock={}",
+                notification.userId(), notification.productId(), notification.stock());
 
-        Notification notificationToSave = notificationFactory.createLowStockNotification(
-                new UserId(notification.userId()),
-                new ProductId(notification.productId()),
-                notification.quantity()
-        );
+        ProductDTO productDTO = apiClient.getProductById(new ProductId(notification.productId()));
 
-        notificationSaveUseCase.execute(notificationToSave);
+            Notification notificationToSave = notificationFactory.createLowStockNotification(
+                    new UserId(notification.userId()),
+                    productDTO
+            );
+
+            notificationSaveUseCase.execute(notificationToSave);
     }
+
 }

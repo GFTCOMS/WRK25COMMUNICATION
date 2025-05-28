@@ -1,8 +1,10 @@
 package com.gft.wrk25_communication.communication.infrastructure.config;
 
+import com.gft.wrk25_communication.communication.domain.ProductId;
 import com.gft.wrk25_communication.communication.domain.notification.NotificationId;
 import com.gft.wrk25_communication.communication.infrastructure.error.ErrorResponse;
 import com.gft.wrk25_communication.communication.infrastructure.exception.NotificationNotFoundException;
+import com.gft.wrk25_communication.communication.infrastructure.exception.ProductNotFoundException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
@@ -69,6 +71,21 @@ class CustomExceptionHandlerTest {
         ErrorResponse errorResponse = new ErrorResponse("The body of the request must not be empty");
 
         assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
+        assertNotNull(response.getBody());
+        assertEquals(errorResponse.getError(), response.getBody().getError());
+    }
+
+    @Test
+    void testHandleProductNotFoundException() {
+
+        ProductId productId = new ProductId(1L);
+
+        ResponseEntity<ErrorResponse> response = customExceptionHandler
+                .handleProductNotFoundException(new ProductNotFoundException(productId));
+
+        ErrorResponse errorResponse = new ErrorResponse("The product " + productId.id() + " was not found");
+
+        assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
         assertNotNull(response.getBody());
         assertEquals(errorResponse.getError(), response.getBody().getError());
     }
