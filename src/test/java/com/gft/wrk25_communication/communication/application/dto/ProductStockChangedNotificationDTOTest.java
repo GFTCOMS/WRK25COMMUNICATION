@@ -14,7 +14,7 @@ class ProductStockChangedNotificationDTOTest {
 
         ProductStockChangedNotificationDTO notification = new ProductStockChangedNotificationDTO(productId,stock);
 
-        assertEquals(productId, notification.id());
+        assertEquals(productId, notification.productId());
         assertEquals(stock, notification.stock());
     }
 
