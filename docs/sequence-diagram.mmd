@@ -1,0 +1,20 @@
+sequenceDiagram
+    participant ExternalService as External Service
+    participant RabbitMQ as RabbitMQ
+    participant Consumer as Message Consumer
+    participant Factory as Notification Factory
+    participant UseCase as Notification Use Case
+    participant Repository as Notification Repository
+    participant DB as Database
+    participant Publisher as Event Publisher
+    participant Producer as Notification Producer
+
+    ExternalService->>RabbitMQ: Send Event
+    RabbitMQ->>Consumer: Deliver Event
+    Consumer->>Factory: Create Notification
+    Factory->>UseCase: Save Notification
+    UseCase->>Repository: Persist Notification
+    Repository->>DB: Store in Database
+    UseCase->>Publisher: Publish Event
+    Publisher->>Producer: Send to RabbitMQ
+    Producer->>RabbitMQ: Publish to Exchange

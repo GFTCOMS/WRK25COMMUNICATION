@@ -1,0 +1,8 @@
+classDiagram
+    Notification --> NotificationId
+    Notification --> UserId
+    NotificationFactory --> Notification
+    NotificationRepository --> Notification
+    NotificationCreatedEvent --> Notification
+    NotificationDTO --> Notification
+    NotificationEventPublisher --> NotificationCreatedEvent
