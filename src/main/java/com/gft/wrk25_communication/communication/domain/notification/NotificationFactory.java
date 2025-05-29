@@ -46,6 +46,10 @@ public class NotificationFactory {
         return new Notification(userId, message);
     }
 
+        public Notification createAbandonedCartNotification(UserId userId) {
+           String message = "Tu carrito ha sido abandonado";
+           return new Notification(userId, message);
+    }
 
 
 }
