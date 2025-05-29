@@ -46,6 +46,11 @@ public class NotificationFactory {
         return new Notification(userId, message);
     }
 
+        public Notification createAbandonedCartNotification(UserId userId) {
+           Assert.notNull(userId, "UserId must not be null");
+           String message = String.format("Tu carrito ha sido abandonado (ID: %s)", userId.id());
+           return new Notification(userId, message);
+    }
 
 
 }
