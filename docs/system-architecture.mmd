@@ -1,0 +1,16 @@
+flowchart TB
+    ProductService[Product Service]
+    OrderService[Order Service]
+    RabbitMQ[RabbitMQ]
+    Consumers[Message Consumers]
+    NotificationService[Notification Service]
+    DB[(PostgreSQL)]
+    API[REST API]
+    
+    ProductService -->|Stock Events| RabbitMQ
+    OrderService -->|Order Events| RabbitMQ
+    RabbitMQ -->|Events| Consumers
+    Consumers -->|Process| NotificationService
+    NotificationService -->|Store| DB
+    NotificationService -->|Expose| API
+    Client[Client Applications] -->|HTTP| API
