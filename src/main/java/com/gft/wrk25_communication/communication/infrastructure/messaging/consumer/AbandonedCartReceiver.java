@@ -31,6 +31,6 @@ public class AbandonedCartReceiver {
 
         notificationSaveUseCase.execute(notification);
 
-        log.info("Notificación procesada y evento publicado para carrito abandonado.");
     }
+
 }
