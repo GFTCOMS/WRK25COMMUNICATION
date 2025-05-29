@@ -10,6 +10,7 @@ import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Repository
@@ -76,6 +77,12 @@ public class NotificationRepositoryImpl implements NotificationRepository {
     @Transactional
     public void setImportant(NotificationId id, boolean important) {
         repository.setImportant(id.id(), important);
+    }
+
+    @Override
+    @Transactional
+    public void deleteByCreateAtBefore(LocalDateTime maxDays) {
+        repository.deleteByCreatedAtBefore(maxDays);
     }
 
 }

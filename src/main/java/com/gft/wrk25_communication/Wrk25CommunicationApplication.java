@@ -3,9 +3,14 @@ package com.gft.wrk25_communication;
 import lombok.Generated;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.context.annotation.Bean;
+import org.springframework.scheduling.annotation.EnableScheduling;
+
+import java.time.Clock;
 
 @Generated
 @SpringBootApplication
+@EnableScheduling
 public class Wrk25CommunicationApplication {
 
     public static void main(String[] args) {

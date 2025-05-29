@@ -2,6 +2,7 @@ package com.gft.wrk25_communication.communication.domain.notification;
 
 import com.gft.wrk25_communication.communication.domain.UserId;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 public interface NotificationRepository {
@@ -17,5 +18,7 @@ public interface NotificationRepository {
     void deleteAllByUserId(UserId id);
 
     void setImportant(NotificationId id, boolean important);
+
+    void deleteByCreateAtBefore(LocalDateTime maxDays);
 
 }

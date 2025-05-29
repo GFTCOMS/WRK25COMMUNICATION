@@ -126,6 +126,14 @@ class NotificationRepositoryImplTest {
         verify(notificationEntityRepository, times(1)).setImportant(notificationEntities.get(0).getId(), false);
     }
 
+    @Test
+    void testDeleteByCreateAtBefore() {
+        LocalDateTime maxDate = LocalDateTime.now().minusDays(10);
+        repositoryToTest.deleteByCreateAtBefore(maxDate);
+        verify(notificationEntityRepository, times(1)).deleteByCreatedAtBefore(maxDate);
+    }
+
+
     private void initObjects() {
         UUID userId = UUID.randomUUID();
         notificationEntities = new LinkedList<>();
