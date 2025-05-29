@@ -29,9 +29,9 @@ public class ProductRestockChangedNotificationReceiver {
     public void receive(ProductStockChangedNotificationDTO notification) {
 
         log.info("Recibida notificación de ProductStockChangedNotification: productId={}, stock={}",
-                notification.id(), notification.stock());
+                notification.productId(), notification.stock());
 
-        ProductId productId = new ProductId(notification.id());
+        ProductId productId = new ProductId(notification.productId());
 
         ProductDTO product = apiClient.getProductById(productId);
 
