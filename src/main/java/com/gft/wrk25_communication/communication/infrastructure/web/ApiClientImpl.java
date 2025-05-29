@@ -18,16 +18,16 @@ import java.util.UUID;
 @Slf4j
 public class ApiClientImpl implements ApiClient {
 
-    @Value("users.url")
+    @Value("${users.url}")
     private String usersUrl;
 
-    @Value("products.url")
+    @Value("${products.url}")
     private String productsUrl;
 
-    @Value("users.find.product.id")
+    @Value("${users.product.find.id}")
     private String findUsersFromProductIdEndpoint;
 
-    @Value("products.find.id")
+    @Value("${products.find.id}")
     private String findProductFromIdEndpoint;
 
     private final WebClient webClient;
@@ -36,7 +36,7 @@ public class ApiClientImpl implements ApiClient {
     public List<UserId> getUsersThatHaveProductInFavorites(ProductId productId) {
 
         List<UUID> users = webClient.get()
-                .uri(usersUrl + findUsersFromProductIdEndpoint + "/" + productId.id())
+                .uri(usersUrl + findUsersFromProductIdEndpoint + productId.id())
                 .retrieve()
                 .bodyToFlux(UUID.class)
                 .collectList()
