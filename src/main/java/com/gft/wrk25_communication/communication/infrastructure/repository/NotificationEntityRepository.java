@@ -5,6 +5,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
 
@@ -17,5 +18,7 @@ public interface NotificationEntityRepository extends JpaRepository<Notification
     @Query("UPDATE NotificationEntity n SET n.important = :important WHERE n.id = :id")
     void setImportant(UUID id, boolean important);
 
-
+    @Modifying
+    @Query(value = "DELETE FROM NotificationEntity n WHERE n.created_at < CURRENT_DATE - INTERVAL '25 days'", nativeQuery = true)
+    void deleteOldNotifications();
 }

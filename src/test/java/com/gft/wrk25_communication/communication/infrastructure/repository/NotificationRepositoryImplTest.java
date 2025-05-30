@@ -126,6 +126,13 @@ class NotificationRepositoryImplTest {
         verify(notificationEntityRepository, times(1)).setImportant(notificationEntities.get(0).getId(), false);
     }
 
+    @Test
+    void testDeleteOldNotifications() {
+        repositoryToTest.deleteOldNotifications();
+        verify(notificationEntityRepository, times(1)).deleteOldNotifications();
+    }
+
+
     private void initObjects() {
         UUID userId = UUID.randomUUID();
         notificationEntities = new LinkedList<>();

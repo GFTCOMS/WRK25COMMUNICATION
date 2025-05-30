@@ -18,4 +18,6 @@ public interface NotificationRepository {
 
     void setImportant(NotificationId id, boolean important);
 
+    void deleteOldNotifications();
+
 }
