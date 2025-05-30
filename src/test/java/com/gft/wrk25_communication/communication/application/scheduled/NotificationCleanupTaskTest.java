@@ -21,12 +21,10 @@ class NotificationCleanupTaskTest {
     private NotificationRepository notificationRepository;
 
     @Test
-    void testDeleteOldNotifications_callsDeleteWithCorrectThreshold() {
-        LocalDateTime now = LocalDateTime.now();
-        LocalDateTime threshold = now.minusDays(25);
+    void testDeleteOldNotificationsCallsRepositoryMethod() {
 
         notificationCleanupTask.deleteOldNotifications();
 
-        verify(notificationRepository, times(1)).deleteByCreateAtBefore(threshold);
+        verify(notificationRepository, times(1)).deleteOldNotifications();
     }
 }

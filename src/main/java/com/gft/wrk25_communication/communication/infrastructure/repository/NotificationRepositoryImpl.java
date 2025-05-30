@@ -79,10 +79,10 @@ public class NotificationRepositoryImpl implements NotificationRepository {
         repository.setImportant(id.id(), important);
     }
 
-    @Override
     @Transactional
-    public void deleteByCreateAtBefore(LocalDateTime maxDays) {
-        repository.deleteByCreatedAtBefore(maxDays);
+    @Override
+    public void deleteOldNotifications() {
+        repository.deleteOldNotifications();
     }
 
 }

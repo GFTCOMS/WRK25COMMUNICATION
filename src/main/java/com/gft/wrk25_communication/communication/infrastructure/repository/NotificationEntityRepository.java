@@ -19,6 +19,6 @@ public interface NotificationEntityRepository extends JpaRepository<Notification
     void setImportant(UUID id, boolean important);
 
     @Modifying
-    @Query("DELETE FROM NotificationEntity n WHERE n.createdAt < :date")
-    void deleteByCreatedAtBefore(LocalDateTime createdAtBefore);
+    @Query(value = "DELETE FROM NotificationEntity n WHERE n.created_at < CURRENT_DATE - INTERVAL '25 days'", nativeQuery = true)
+    void deleteOldNotifications();
 }

@@ -127,10 +127,9 @@ class NotificationRepositoryImplTest {
     }
 
     @Test
-    void testDeleteByCreateAtBefore() {
-        LocalDateTime maxDate = LocalDateTime.now().minusDays(10);
-        repositoryToTest.deleteByCreateAtBefore(maxDate);
-        verify(notificationEntityRepository, times(1)).deleteByCreatedAtBefore(maxDate);
+    void testDeleteOldNotifications() {
+        repositoryToTest.deleteOldNotifications();
+        verify(notificationEntityRepository, times(1)).deleteOldNotifications();
     }
 
 
