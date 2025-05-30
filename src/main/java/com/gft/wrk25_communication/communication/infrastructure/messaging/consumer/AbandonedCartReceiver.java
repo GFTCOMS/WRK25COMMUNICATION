@@ -26,7 +26,7 @@ public class AbandonedCartReceiver {
         log.info("Mensaje de carrito abandonado recibido para usuario {}", dto.userId());
 
         Notification notification = factory.createAbandonedCartNotification(
-                new UserId(dto.userId().id())
+                new UserId(dto.userId().userId())
         );
 
         notificationSaveUseCase.execute(notification);

@@ -54,7 +54,7 @@ class NotificationControllerTest {
 
         when(notificationGetAllUseCase.execute(userId)).thenReturn(notificationDTOList);
 
-        ResponseEntity<List<NotificationDTO>> response = notificationController.getAllNotificationsFromUserId(userId.id().toString());
+        ResponseEntity<List<NotificationDTO>> response = notificationController.getAllNotificationsFromUserId(userId.userId().toString());
 
         List<NotificationDTO> actualNotificationDTOs = response.getBody();
 
@@ -124,7 +124,7 @@ class NotificationControllerTest {
                     new NotificationDTO(
                             notification.getId().id(),
                             notification.getCreatedAt(),
-                            notification.getUserId().id(),
+                            notification.getUserId().userId(),
                             notification.getMessage(),
                             notification.isImportant()
                     )
