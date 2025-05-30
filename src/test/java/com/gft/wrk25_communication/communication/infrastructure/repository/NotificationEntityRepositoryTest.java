@@ -68,4 +68,36 @@ class NotificationEntityRepositoryTest {
                 .build();
     }
 
+    @Test
+    void deleteOldNotifications_removesEntitiesOlderThan25Days() {
+
+        NotificationEntity oldNotification = NotificationEntity.builder()
+                .id(UUID.randomUUID())
+                .createdAt(LocalDateTime.now().minusDays(30))
+                .userId(UUID.randomUUID())
+                .message("Old notification")
+                .important(false)
+                .build();
+
+        NotificationEntity recentNotification = NotificationEntity.builder()
+                .id(UUID.randomUUID())
+                .createdAt(LocalDateTime.now().minusDays(5))
+                .userId(UUID.randomUUID())
+                .message("Recent notification")
+                .important(true)
+                .build();
+
+        entityManager.persist(oldNotification);
+        entityManager.persist(recentNotification);
+        entityManager.flush();
+
+        repositoryToTest.deleteOldNotifications();
+        entityManager.clear();
+
+        var remainingNotifications = repositoryToTest.findAll();
+        assertEquals(1, remainingNotifications.size());
+        assertEquals("Recent notification", remainingNotifications.get(0).getMessage());
+    }
+
+
 }

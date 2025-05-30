@@ -24,7 +24,6 @@ class NotificationCleanupTaskTest {
     void testDeleteOldNotificationsCallsRepositoryMethod() {
 
         notificationCleanupTask.deleteOldNotifications();
-
         verify(notificationRepository, times(1)).deleteOldNotifications();
     }
 }
