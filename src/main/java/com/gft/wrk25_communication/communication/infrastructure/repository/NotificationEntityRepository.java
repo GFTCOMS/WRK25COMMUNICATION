@@ -20,5 +20,5 @@ public interface NotificationEntityRepository extends JpaRepository<Notification
 
     @Modifying
     @Query(value = "DELETE FROM notifications WHERE created_at < DATEADD('DAY', -25, CURRENT_DATE)", nativeQuery = true)
-    void deleteOldNotifications();;
+    void deleteOldNotifications();
 }
