@@ -28,7 +28,7 @@ public class ProductRestockChangedNotificationReceiver {
     @RabbitListener(queues = "${queue.product.stock.restock}")
     public void receive(ProductStockChangedNotificationDTO notification) {
 
-        log.info("Recibida notificación de ProductStockChangedNotification: productId={}, stock={}",
+        log.info("ProductStockChangedNotification notification received: productId={}, stock={}",
                 notification.productId(), notification.stock());
 
         ProductId productId = new ProductId(notification.productId());
