@@ -37,7 +37,7 @@ class OrderStatusChangedNotificationReceiverTest {
         OrderId orderId = new OrderId(UUID.randomUUID());
         String orderStatus = "IN_DELIVERY";
 
-        OrderStatusChangedNotificationDTO notification = new OrderStatusChangedNotificationDTO(userId.id(), orderId.id(), orderStatus);
+        OrderStatusChangedNotificationDTO notification = new OrderStatusChangedNotificationDTO(userId.userId(), orderId.id(), orderStatus);
         Notification notificationToReturn = workingFactory.createOrderStatusChangedNotification(userId, orderId, orderStatus);
 
         when(notificationFactory.createOrderStatusChangedNotification(userId, orderId, orderStatus))

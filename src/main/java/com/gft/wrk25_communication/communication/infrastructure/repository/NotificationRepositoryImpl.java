@@ -10,7 +10,6 @@ import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
-import java.time.LocalDateTime;
 import java.util.List;
 
 @Repository
@@ -22,7 +21,7 @@ public class NotificationRepositoryImpl implements NotificationRepository {
 
     @Override
     public List<Notification> findAllByUserId(UserId userId) {
-        return repository.findAllByUserId(userId.id()).stream().map(notificationEntity ->
+        return repository.findAllByUserId(userId.userId()).stream().map(notificationEntity ->
                 factory.reinstantiate(
                         new NotificationId(notificationEntity.getId()),
                         notificationEntity.getCreatedAt(),
@@ -45,7 +44,8 @@ public class NotificationRepositoryImpl implements NotificationRepository {
                 NotificationEntity.builder()
                         .id(notification.getId().id())
                         .createdAt(notification.getCreatedAt())
-                        .userId(notification.getUserId().id())
+                        .userId(notification.getUserId().userId())
+                        .userId(notification.getUserId().userId())
                         .message(notification.getMessage())
                         .important(notification.isImportant())
                         .build();
@@ -70,7 +70,7 @@ public class NotificationRepositoryImpl implements NotificationRepository {
     @Override
     @Transactional
     public void deleteAllByUserId(UserId userId) {
-        repository.deleteAllByUserId(userId.id());
+        repository.deleteAllByUserId(userId.userId());
     }
 
     @Override

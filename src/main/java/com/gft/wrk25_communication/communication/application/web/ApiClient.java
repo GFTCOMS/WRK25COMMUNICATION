@@ -12,4 +12,6 @@ public interface ApiClient {
 
     ProductDTO getProductById(ProductId productId);
 
+    void deleteUserDeletedCart(UserId userId);
+
 }

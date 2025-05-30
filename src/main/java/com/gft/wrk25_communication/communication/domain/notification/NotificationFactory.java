@@ -51,5 +51,4 @@ public class NotificationFactory {
            return new Notification(userId, message);
     }
 
-
 }

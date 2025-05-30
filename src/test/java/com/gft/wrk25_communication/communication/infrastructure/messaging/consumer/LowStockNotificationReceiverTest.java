@@ -42,7 +42,7 @@ class LowStockNotificationReceiverTest {
         UserId userId = new UserId(UUID.randomUUID());
         ProductDTO productDTO = Instancio.create(ProductDTO.class);
 
-        LowStockNotificationDTO notification = new LowStockNotificationDTO(userId.id(), productDTO.id(), productDTO.inventoryData().stock());
+        LowStockNotificationDTO notification = new LowStockNotificationDTO(userId.userId(), productDTO.id(), productDTO.inventoryData().stock());
         Notification notificationToReturn = workingFactory.createLowStockNotification(userId, productDTO);
 
         when(apiClient.getProductById(new ProductId(productDTO.id()))).thenReturn(productDTO);

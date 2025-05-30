@@ -17,7 +17,7 @@ public class NotificationGetAllUseCase {
     private final NotificationRepository notificationRepository;
 
     public List<NotificationDTO> execute(UserId userId) {
-        log.info("Ejecutando caso de uso NotificationGetAllUseCase para userId={}", userId.id());
+        log.info("Ejecutando caso de uso NotificationGetAllUseCase para userId={}", userId.userId());
 
        List<NotificationDTO> notifications = notificationRepository.findAllByUserId(userId)
                .stream()
@@ -25,11 +25,11 @@ public class NotificationGetAllUseCase {
                 new NotificationDTO(
                         notification.getId().id(),
                         notification.getCreatedAt(),
-                        notification.getUserId().id(),
+                        notification.getUserId().userId(),
                         notification.getMessage(),
                         notification.isImportant()
                 )).toList();
-       log.info("Notificaciones encontradas para el usuario {}: {}", userId.id(), notifications.size());
+       log.info("Notificaciones encontradas para el usuario {}: {}", userId.userId(), notifications.size());
        return notifications;
     }
 

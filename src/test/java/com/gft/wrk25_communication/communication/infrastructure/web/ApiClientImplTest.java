@@ -1,16 +1,19 @@
-package com.gft.wrk25_communication.communication.infrastructure.client;
+package com.gft.wrk25_communication.communication.infrastructure.web;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.gft.wrk25_communication.communication.application.dto.ProductDTO;
 import com.gft.wrk25_communication.communication.domain.ProductId;
 import com.gft.wrk25_communication.communication.domain.UserId;
-import com.gft.wrk25_communication.communication.infrastructure.web.ApiClientImpl;
 import okhttp3.mockwebserver.MockResponse;
 import okhttp3.mockwebserver.MockWebServer;
 import org.instancio.Instancio;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.web.reactive.function.client.WebClient;
 
 import java.util.List;
@@ -112,4 +115,18 @@ class ApiClientImplTest {
         assertNull(actualResponse);
     }
 
+    @Test
+    void deleteUserDeletedCart() throws Exception {
+
+        UserId userId = Instancio.create(UserId.class);
+
+        mockWebServer.enqueue(new MockResponse()
+                .setStatus("HTTP/1.1 204 No Content"));
+
+        apiClient.deleteUserDeletedCart(userId);
+
+        String requestPath = mockWebServer.takeRequest().getPath();
+
+        assertTrue(requestPath.contains(userId.userId().toString()));
+    }
 }

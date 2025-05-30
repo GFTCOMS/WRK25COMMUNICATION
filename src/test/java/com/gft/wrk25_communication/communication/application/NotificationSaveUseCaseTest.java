@@ -1,6 +1,6 @@
 package com.gft.wrk25_communication.communication.application;
 
-import com.gft.wrk25_communication.communication.domain.event.NotificationEventPublisher;
+import com.gft.wrk25_communication.communication.domain.event.EventPublisher;
 import com.gft.wrk25_communication.communication.domain.UserId;
 import com.gft.wrk25_communication.communication.domain.event.NotificationCreatedEvent;
 import com.gft.wrk25_communication.communication.domain.notification.Notification;
@@ -25,7 +25,7 @@ class NotificationSaveUseCaseTest {
     private NotificationRepository repository;
 
     @Mock
-    private NotificationEventPublisher eventPublisher;
+    private EventPublisher eventPublisher;
 
     @InjectMocks
     private NotificationSaveUseCase useCaseToTest;

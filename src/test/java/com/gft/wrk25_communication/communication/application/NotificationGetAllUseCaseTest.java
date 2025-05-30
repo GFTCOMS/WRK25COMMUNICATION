@@ -67,7 +67,7 @@ class NotificationGetAllUseCaseTest {
                     new NotificationDTO(
                             notification.getId().id(),
                             notification.getCreatedAt(),
-                            notification.getUserId().id(),
+                            notification.getUserId().userId(),
                             notification.getMessage(),
                             notification.isImportant()
                     )

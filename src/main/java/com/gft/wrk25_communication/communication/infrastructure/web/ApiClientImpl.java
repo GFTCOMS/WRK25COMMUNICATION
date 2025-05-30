@@ -24,11 +24,17 @@ public class ApiClientImpl implements ApiClient {
     @Value("${products.url}")
     private String productsUrl;
 
+    @Value(" ${cart.url}")
+    private String cartUrl;
+
     @Value("${users.product.find.id}")
     private String findUsersFromProductIdEndpoint;
 
     @Value("${products.find.id}")
     private String findProductFromIdEndpoint;
+
+    @Value("${cart.user.deleted}")
+    private String deleteUsersFromCartEndpoint;
 
     private final WebClient webClient;
 
@@ -67,6 +73,12 @@ public class ApiClientImpl implements ApiClient {
 
         log.info("Producto encontrado con id {}", productDTO.id());
         return productDTO;
+    }
+
+    @Override
+    public void deleteUserDeletedCart(UserId userId) {
+        log.info("Eliminando el carrito del usuario {}", userId);
+        webClient.delete().uri(cartUrl + deleteUsersFromCartEndpoint + userId.toString()).retrieve().toBodilessEntity().block();
     }
 
 }

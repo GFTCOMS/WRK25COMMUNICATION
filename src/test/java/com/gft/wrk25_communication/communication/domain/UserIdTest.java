@@ -12,7 +12,7 @@ class UserIdTest {
     void testUserIdReturnsId() {
         UUID id = UUID.randomUUID();
         UserId userId = new UserId(id);
-        assertEquals(id, userId.id());
+        assertEquals(id, userId.userId());
     }
 
     @Test

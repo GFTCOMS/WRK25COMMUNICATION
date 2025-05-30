@@ -2,6 +2,7 @@ package com.gft.wrk25_communication.communication.infrastructure.event;
 
 import com.gft.wrk25_communication.communication.domain.UserId;
 import com.gft.wrk25_communication.communication.domain.event.NotificationCreatedEvent;
+import com.gft.wrk25_communication.communication.domain.event.UserDeletedEvent;
 import com.gft.wrk25_communication.communication.domain.notification.Notification;
 import com.gft.wrk25_communication.communication.domain.notification.NotificationFactory;
 import com.gft.wrk25_communication.communication.domain.notification.NotificationId;
@@ -20,13 +21,13 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
 @ExtendWith(MockitoExtension.class)
-class NotificationEventPublisherImplTest {
+class EventPublisherImplTest {
 
     @Mock
     private ApplicationEventPublisher applicationEventPublisher;
 
     @InjectMocks
-    private NotificationEventPublisherImpl notificationEventPublisherImpl;
+    private EventPublisherImpl eventPublisherImpl;
 
     private final NotificationFactory notificationFactory = new NotificationFactory();
 
@@ -43,9 +44,20 @@ class NotificationEventPublisherImplTest {
 
         NotificationCreatedEvent notificationCreatedEvent = new NotificationCreatedEvent(notification);
 
-        notificationEventPublisherImpl.publishNotificationCreatedEvent(notificationCreatedEvent);
+        eventPublisherImpl.publishNotificationCreatedEvent(notificationCreatedEvent);
 
         verify(applicationEventPublisher, times(1)).publishEvent(notificationCreatedEvent);
     }
 
+    @Test
+    void testPublishUserDeletedEvent() {
+
+        UserId userId = Instancio.create(UserId.class);
+
+        UserDeletedEvent userDeletedEvent = new UserDeletedEvent(userId);
+
+        eventPublisherImpl.publishUserDeletedEvent(userDeletedEvent);
+
+        verify(applicationEventPublisher, times(1)).publishEvent(userDeletedEvent);
+    }
 }
