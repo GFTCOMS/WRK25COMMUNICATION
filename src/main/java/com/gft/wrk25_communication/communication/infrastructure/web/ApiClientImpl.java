@@ -49,11 +49,11 @@ public class ApiClientImpl implements ApiClient {
                 .block();
 
         if (users.isEmpty()) {
-            log.error("Usuarios no encontrados con el producto con id {}", productId.id());
+            log.error("Users not found with product id {}", productId.id());
             return List.of();
         }
 
-        log.info("{} usuarios encontrados", users.size());
+        log.info("{} users not found", users.size());
 
         return users.stream().map(UserId::new).toList();
     }
@@ -67,17 +67,17 @@ public class ApiClientImpl implements ApiClient {
                 .block();
 
         if (productDTO == null) {
-            log.error("Producto no encontrado con id {}", productId.id());
+            log.error("Product not found with id {}", productId.id());
             return null;
         }
 
-        log.info("Producto encontrado con id {}", productDTO.id());
+        log.info("product found with id {}", productDTO.id());
         return productDTO;
     }
 
     @Override
     public void deleteUserDeletedCart(UserId userId) {
-        log.info("Eliminando el carrito del usuario {}", userId);
+        log.info("Deleting cart for user with id {}", userId);
         webClient.delete().uri(cartUrl + deleteUsersFromCartEndpoint + userId.toString()).retrieve().toBodilessEntity().block();
     }
 

@@ -17,16 +17,16 @@ public class NotificationSaveUseCase {
     private final EventPublisher eventPublisher;
 
     public void execute(Notification notification) {
-        log.info("Guardando notificación para el usuario con ID: {}", notification.getUserId().userId());
+        log.info("Saving notification for user with ID: {}", notification.getUserId().userId());
 
         Notification notificationSaved = notificationRepository.save(notification);
 
-        log.info("Notificación guardada con ID: {}", notificationSaved.getId().id());
+        log.info("Notification saved with ID: {}", notificationSaved.getId().id());
 
         eventPublisher.publishNotificationCreatedEvent(
                 new NotificationCreatedEvent(notificationSaved)
         );
 
-        log.info("Evento NotificationCreatedEvent publicado para notificación ID: {}", notificationSaved.getId().id());
+        log.info("Event NotificationCreatedEvent published for notification ID: {}", notificationSaved.getId().id());
     }
 }

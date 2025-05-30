@@ -16,19 +16,19 @@ public class NotificationSetImportantByIdUseCase {
 
     public void execute(NotificationId notificationId, Boolean important) {
         if (important == null) {
-            log.error("El parámetro 'important' es null para la notificación con ID: {}", notificationId.id());
+            log.error("Parameter important is null on the notification with ID: {}", notificationId.id());
             throw new IllegalArgumentException("important is null");
         }
 
-        log.info("Marcando notificación con ID: {} como {}", notificationId.id(), important ? "importante" : "no importante");
+        log.info("Setting the notification withMarcando notificación con ID: {} as {}", notificationId.id(), important ? "important" : "not important");
 
         if (!notificationRepository.existsById(notificationId)) {
-            log.warn("No se encontró la notificación con ID: {}", notificationId.id());
+            log.warn("Could not find the notification with ID: {}", notificationId.id());
             throw new NotificationNotFoundException(notificationId);
         }
 
         notificationRepository.setImportant(notificationId, important);
 
-        log.info("Notificación con ID: {} actualizada exitosamente como {}", notificationId.id(), important ? "importante" : "no importante");
+        log.info("Notification with ID: {} succesfully updated as {}", notificationId.id(), important ? "important" : "not important");
     }
 }

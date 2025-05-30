@@ -21,7 +21,7 @@ public class OrderStatusChangedNotificationReceiver {
 
     @RabbitListener(queues = "${queue.order.state.changed}")
     public void receive(OrderStatusChangedNotificationDTO notification) {
-        log.info("Recibida OrderStatusChangedNotification: userId={}, orderId={}, status={}",
+        log.info("Received OrderStatusChangedNotification: userId={}, orderId={}, status={}",
                 notification.userId(), notification.orderId(), notification.orderStatus());
 
         Notification notificationToSave = notificationFactory.createOrderStatusChangedNotification(

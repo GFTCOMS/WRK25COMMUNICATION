@@ -15,14 +15,14 @@ public class NotificationDeleteByIdUseCase {
     private final NotificationRepository notificationRepository;
 
     public void execute(NotificationId notificationId) {
-        log.info("Intentando eliminar la notificación con el ID: {}", notificationId.id());
+        log.info("Trying to eliminate the notification with ID: {}", notificationId.id());
 
         if (!notificationRepository.existsById(notificationId)) {
-            log.warn("No se encontró la notificación con ID: {}", notificationId.id());
+            log.warn("Could not found a notification with ID: {}", notificationId.id());
             throw new NotificationNotFoundException(notificationId);
         }
 
         notificationRepository.deleteById(notificationId);
-        log.info("Notificación eliminada exitosamente con ID: {}", notificationId.id());
+        log.info("Succesfully eliminated notification with ID: {}", notificationId.id());
     }
 }

@@ -24,7 +24,7 @@ public class LowStockNotificationReceiver {
 
     @RabbitListener(queues = "${queue.product.stock.low}")
     public void receive(LowStockNotificationDTO notification) {
-        log.info("Recibida notificación de LowStockNotification: userId={}, productId={}, stock={}",
+        log.info("LowStockNotification notification received: userId={}, productId={}, stock={}",
                 notification.userId(), notification.productId(), notification.stock());
 
         ProductDTO productDTO = apiClient.getProductById(new ProductId(notification.productId()));

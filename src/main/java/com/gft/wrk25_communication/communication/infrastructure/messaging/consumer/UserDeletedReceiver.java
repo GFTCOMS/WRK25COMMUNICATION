@@ -16,7 +16,7 @@ public class UserDeletedReceiver {
 
     @RabbitListener(queues = "${queue.user.deleted}")
     public void receive(UserId userId) {
-        log.info("Recibido usuario eliminado : userId={}",
+        log.info("User deleted received : userId={}",
                 userId.userId());
 
         notificationDeleteByUserIdUseCase.execute(userId);

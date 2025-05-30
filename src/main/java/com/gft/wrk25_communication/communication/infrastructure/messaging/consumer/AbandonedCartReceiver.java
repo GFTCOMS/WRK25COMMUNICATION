@@ -21,7 +21,7 @@ public class AbandonedCartReceiver {
 
     @RabbitListener(queues = "${queue.cart.abandoned}")
     public void handleMessage(AbandonedCartDTO dto) {
-        log.info("Mensaje de carrito abandonado recibido para usuario {}", dto.userId());
+        log.info("Abandoned Cart message for user {}", dto.userId());
 
         Notification notification = factory.createAbandonedCartNotification(
                 new UserId(dto.userId().userId())
