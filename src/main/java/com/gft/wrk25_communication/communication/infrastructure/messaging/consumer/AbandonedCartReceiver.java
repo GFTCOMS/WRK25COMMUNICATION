@@ -5,13 +5,11 @@ import com.gft.wrk25_communication.communication.application.dto.AbandonedCartDT
 import com.gft.wrk25_communication.communication.domain.UserId;
 import com.gft.wrk25_communication.communication.domain.notification.NotificationFactory;
 import com.gft.wrk25_communication.communication.domain.notification.Notification;
-import com.gft.wrk25_communication.communication.domain.notification.NotificationId;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.stereotype.Component;
 
-import java.time.LocalDateTime;
 
 @Slf4j
 @Component
