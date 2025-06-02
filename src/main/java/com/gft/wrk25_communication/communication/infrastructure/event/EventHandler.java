@@ -6,11 +6,13 @@ import com.gft.wrk25_communication.communication.domain.event.NotificationCreate
 import com.gft.wrk25_communication.communication.domain.event.UserDeletedEvent;
 import com.gft.wrk25_communication.communication.infrastructure.messaging.producer.NotificationProducer;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Component;
 
 @Component
 @RequiredArgsConstructor
+@Slf4j
 public class EventHandler {
 
     private final NotificationProducer notificationProducer;
@@ -32,7 +34,11 @@ public class EventHandler {
 
     @EventListener
     public void handleUserDeletedEvent(UserDeletedEvent event) {
-        apiClient.deleteUserDeletedCart(event.userId());
+        try {
+            apiClient.deleteUserDeletedCart(event.userId());
+        } catch (Exception e) {
+            log.error(e.getMessage());
+        }
     }
 
 }

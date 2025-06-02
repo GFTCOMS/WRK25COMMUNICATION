@@ -34,7 +34,7 @@ class UserDeletedReceiverTest {
     UserDeletedReceiver userDeletedReceiver;
 
     @Test
-    void receiveSuccessTest() {
+    void testReceiveSuccess() {
         UserDeletedDTO userDeletedDTO = Instancio.create(UserDeletedDTO.class);
 
         when(tracer.nextSpan()).thenReturn(span);
@@ -54,7 +54,7 @@ class UserDeletedReceiverTest {
     }
 
     @Test
-    void receiveWithExceptionTest() {
+    void testReceiveWithException() {
         UserDeletedDTO userDeletedDTO = Instancio.create(UserDeletedDTO.class);
 
         when(tracer.nextSpan()).thenReturn(span);
