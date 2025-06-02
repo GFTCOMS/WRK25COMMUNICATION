@@ -58,7 +58,7 @@ class NotificationE2EIT {
     }
 
     @Test
-    void testGetNotificationsByUserId_returnsExpectedNotifications() {
+    void testGetNotificationsByUserIdReturnsExpectedNotifications() {
         ResponseEntity<NotificationDTO[]> response = restTemplate.getForEntity(
                 baseUrl() + "/" + userId,
                 NotificationDTO[].class
@@ -72,7 +72,7 @@ class NotificationE2EIT {
     }
 
     @Test
-    void testPatchNotification_setsImportantSuccessfully() {
+    void testPatchNotificationSetsImportantSuccessfully() {
         UUID notificationId = UUID.fromString("d2f7e6a1-9a3a-4bce-9f0d-2b8b0c1a1a1a");
 
         NotificationDTO updateDTO = new NotificationDTO(
