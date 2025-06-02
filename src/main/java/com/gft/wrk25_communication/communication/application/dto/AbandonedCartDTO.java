@@ -4,5 +4,5 @@ import com.gft.wrk25_communication.communication.domain.UserId;
 
 import java.util.UUID;
 
-public record AbandonedCartDTO(UserId userId) {
+public record AbandonedCartDTO(UUID userId) {
 }

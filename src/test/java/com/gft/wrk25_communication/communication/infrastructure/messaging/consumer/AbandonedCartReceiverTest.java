@@ -36,7 +36,7 @@ class AbandonedCartReceiverTest {
 
         UUID uuid = UUID.randomUUID();
         UserId userId = new UserId(uuid);
-        AbandonedCartDTO dto = new AbandonedCartDTO(userId);
+        AbandonedCartDTO dto = new AbandonedCartDTO(userId.userId());
 
         Notification expected = workingFactory.createAbandonedCartNotification(userId);
 
