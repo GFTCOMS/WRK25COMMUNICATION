@@ -1,6 +1,10 @@
 package com.gft.wrk25_communication.communication.e2etest;
 
 import com.gft.wrk25_communication.communication.application.dto.NotificationDTO;
+import com.gft.wrk25_communication.communication.domain.UserId;
+import com.gft.wrk25_communication.communication.domain.notification.Notification;
+import com.gft.wrk25_communication.communication.domain.notification.NotificationId;
+import com.gft.wrk25_communication.communication.domain.notification.NotificationRepository;
 import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -13,10 +17,12 @@ import org.springframework.jdbc.datasource.init.ResourceDatabasePopulator;
 import org.springframework.test.context.ActiveProfiles;
 
 import javax.sql.DataSource;
-import java.util.Arrays;
+import java.util.List;
 import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 
 @ActiveProfiles("test")
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
@@ -24,6 +30,9 @@ class NotificationE2EIT {
 
     @LocalServerPort
     private int port;
+
+    @Autowired
+    private NotificationRepository notificationRepository;
 
     @Autowired
     private TestRestTemplate restTemplate;
@@ -51,20 +60,22 @@ class NotificationE2EIT {
     }
 
     @Test
-    void getNotificationsByUserId_returnsExpectedNotifications() {
+    void testGetNotificationsByUserId_returnsExpectedNotifications() {
         ResponseEntity<NotificationDTO[]> response = restTemplate.getForEntity(
                 baseUrl() + "/" + userId,
                 NotificationDTO[].class
         );
 
-        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
-        assertThat(response.getBody()).isNotEmpty();
-        assertThat(response.getBody()[0].userId()).isEqualTo(userId);
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+
+        List<Notification> expected = notificationRepository.findAllByUserId(new UserId(userId));
+        Assertions.assertNotNull(response.getBody());
+        assertEquals(expected.size(), response.getBody().length);
     }
 
 
     @Test
-    void patchNotification_returnsNoContent() {
+    void testPatchNotification_setsImportantSuccessfully() {
         UUID notificationId = UUID.fromString("d2f7e6a1-9a3a-4bce-9f0d-2b8b0c1a1a1a");
 
         NotificationDTO updateDTO = new NotificationDTO(
@@ -87,29 +98,19 @@ class NotificationE2EIT {
         );
 
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NO_CONTENT);
-    }
 
-    @Test
-    void getNotificationAfterPatch_returnsUpdatedImportantField() {
-        UUID notificationId = UUID.fromString("d2f7e6a1-9a3a-4bce-9f0d-2b8b0c1a1a1a");
-
-        ResponseEntity<NotificationDTO[]> response = restTemplate.getForEntity(
-                baseUrl() + "/" + userId,
-                NotificationDTO[].class
-        );
-
-        Assertions.assertNotNull(response.getBody());
-        NotificationDTO updated = Arrays.stream(response.getBody())
-                .filter(dto -> dto.id().equals(notificationId))
+        Notification updated = notificationRepository
+                .findAllByUserId(new UserId(userId))
+                .stream()
+                .filter(n -> n.getId().equals(new NotificationId(notificationId)))
                 .findFirst()
                 .orElseThrow();
 
-        assertThat(updated.important()).isFalse();
+        assertFalse(updated.isImportant());
     }
 
-
     @Test
-    void deleteNotification_returnsNoContent() {
+    void testDeleteNotificationRemovesNotificationFromRepository() {
         UUID notificationId = UUID.fromString("d2f7e6a1-9a3a-4bce-9f0d-2b8b0c1a1a1a");
 
         ResponseEntity<Void> response = restTemplate.exchange(
@@ -120,30 +121,8 @@ class NotificationE2EIT {
         );
 
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NO_CONTENT);
+
+        boolean exists = notificationRepository.existsById(new NotificationId(notificationId));
+        assertFalse(exists);
     }
-
-    @Test
-    void getNotificationsAfterDelete_doesNotContainDeletedNotification() {
-        UUID notificationId = UUID.fromString("d2f7e6a1-9a3a-4bce-9f0d-2b8b0c1a1a1a");
-
-        restTemplate.exchange(
-                baseUrl() + "/" + notificationId,
-                HttpMethod.DELETE,
-                null,
-                Void.class
-        );
-
-        ResponseEntity<NotificationDTO[]> response = restTemplate.getForEntity(
-                baseUrl() + "/" + userId,
-                NotificationDTO[].class
-        );
-
-        Assertions.assertNotNull(response.getBody());
-        boolean exists = Arrays.stream(response.getBody())
-                .anyMatch(dto -> dto.id().equals(notificationId));
-
-        assertThat(exists).isFalse();
-    }
-
-
 }

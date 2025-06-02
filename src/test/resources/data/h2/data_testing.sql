@@ -4,5 +4,5 @@ VALUES (
            CURRENT_TIMESTAMP,
            'a19bc46f-5f82-4a93-a1cb-7777cbfdb331',
            'Notificación de prueba E2E',
-           FALSE
+           TRUE
        );
