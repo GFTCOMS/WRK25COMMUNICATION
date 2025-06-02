@@ -19,8 +19,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 class EventHandlerTest {
@@ -66,6 +65,30 @@ class EventHandlerTest {
         UserId userId = Instancio.create(UserId.class);
 
         eventHandler.handleUserDeletedEvent(new UserDeletedEvent(userId));
+
+        verify(apiClient, times(1)).deleteUserDeletedCart(userId);
+    }
+
+    @Test
+    void testHandleUserDeletedEventSuccess() {
+
+        UserId userId = Instancio.create(UserId.class);
+        UserDeletedEvent event = new UserDeletedEvent(userId);
+
+        eventHandler.handleUserDeletedEvent(event);
+
+        verify(apiClient, times(1)).deleteUserDeletedCart(userId);
+    }
+
+    @Test
+    void testHandleUserDeletedEventThrowsException() {
+
+        UserId userId = Instancio.create(UserId.class);
+        UserDeletedEvent event = new UserDeletedEvent(userId);
+
+        doThrow(new RuntimeException("API failure")).when(apiClient).deleteUserDeletedCart(userId);
+
+        eventHandler.handleUserDeletedEvent(event);
 
         verify(apiClient, times(1)).deleteUserDeletedCart(userId);
     }

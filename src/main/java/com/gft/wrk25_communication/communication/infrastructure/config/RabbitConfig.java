@@ -19,6 +19,7 @@ public class RabbitConfig {
                                          Jackson2JsonMessageConverter jackson2JsonMessageConverter) {
         RabbitTemplate rabbitTemplate = new RabbitTemplate(connectionFactory);
         rabbitTemplate.setMessageConverter(jackson2JsonMessageConverter);
+        rabbitTemplate.setObservationEnabled(true);
         return rabbitTemplate;
     }
 
