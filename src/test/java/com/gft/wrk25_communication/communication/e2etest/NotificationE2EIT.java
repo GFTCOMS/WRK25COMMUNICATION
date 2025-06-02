@@ -20,9 +20,7 @@ import javax.sql.DataSource;
 import java.util.List;
 import java.util.UUID;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.*;
 
 @ActiveProfiles("test")
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
@@ -69,10 +67,9 @@ class NotificationE2EIT {
         assertEquals(HttpStatus.OK, response.getStatusCode());
 
         List<Notification> expected = notificationRepository.findAllByUserId(new UserId(userId));
-        Assertions.assertNotNull(response.getBody());
+        assertNotNull(response.getBody());
         assertEquals(expected.size(), response.getBody().length);
     }
-
 
     @Test
     void testPatchNotification_setsImportantSuccessfully() {
@@ -97,7 +94,7 @@ class NotificationE2EIT {
                 Void.class
         );
 
-        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NO_CONTENT);
+        assertEquals(HttpStatus.NO_CONTENT, response.getStatusCode());
 
         Notification updated = notificationRepository
                 .findAllByUserId(new UserId(userId))
@@ -120,9 +117,10 @@ class NotificationE2EIT {
                 Void.class
         );
 
-        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NO_CONTENT);
+        assertEquals(HttpStatus.NO_CONTENT, response.getStatusCode());
 
         boolean exists = notificationRepository.existsById(new NotificationId(notificationId));
         assertFalse(exists);
     }
+
 }
