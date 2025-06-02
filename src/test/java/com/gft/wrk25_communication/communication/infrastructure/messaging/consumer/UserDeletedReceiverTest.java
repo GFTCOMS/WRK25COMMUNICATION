@@ -11,6 +11,8 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.*;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
@@ -32,7 +34,7 @@ class UserDeletedReceiverTest {
     UserDeletedReceiver userDeletedReceiver;
 
     @Test
-    void testReceive() {
+    void receiveSuccessTest() {
         UserDeletedDTO userDeletedDTO = Instancio.create(UserDeletedDTO.class);
 
         when(tracer.nextSpan()).thenReturn(span);
@@ -50,4 +52,32 @@ class UserDeletedReceiverTest {
         verify(span).end();
         verifyNoMoreInteractions(notificationDeleteByUserIdUseCase, tracer, span);
     }
+
+    @Test
+    void receiveWithExceptionTest() {
+        UserDeletedDTO userDeletedDTO = Instancio.create(UserDeletedDTO.class);
+
+        when(tracer.nextSpan()).thenReturn(span);
+        when(span.name(anyString())).thenReturn(span);
+        when(span.start()).thenReturn(span);
+        when(tracer.withSpan(span)).thenReturn(spanInScope);
+
+        doThrow(new RuntimeException("fail")).when(notificationDeleteByUserIdUseCase).execute(any());
+
+        RuntimeException thrown = assertThrows(RuntimeException.class, () -> {
+            userDeletedReceiver.receive(userDeletedDTO);
+        });
+
+        assertEquals("fail", thrown.getMessage());
+
+        verify(tracer).nextSpan();
+        verify(span).name("process.user-deleted-message");
+        verify(span).start();
+        verify(tracer).withSpan(span);
+        verify(notificationDeleteByUserIdUseCase).execute(new UserId(userDeletedDTO.id()));
+        verify(span).error(any(RuntimeException.class));
+        verify(span).end();
+        verifyNoMoreInteractions(notificationDeleteByUserIdUseCase, tracer, span);
+    }
 }
+
