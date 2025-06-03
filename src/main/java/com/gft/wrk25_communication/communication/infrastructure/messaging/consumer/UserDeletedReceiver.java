@@ -3,8 +3,8 @@ package com.gft.wrk25_communication.communication.infrastructure.messaging.consu
 import com.gft.wrk25_communication.communication.application.NotificationDeleteByUserIdUseCase;
 import com.gft.wrk25_communication.communication.application.dto.UserDeletedDTO;
 import com.gft.wrk25_communication.communication.domain.UserId;
-import io.micrometer.tracing.Span;
-import io.micrometer.tracing.Tracer;
+import io.micrometer.observation.Observation;
+import io.micrometer.observation.ObservationRegistry;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
@@ -16,21 +16,16 @@ import org.springframework.stereotype.Component;
 public class UserDeletedReceiver {
 
     private final NotificationDeleteByUserIdUseCase notificationDeleteByUserIdUseCase;
-    private final Tracer tracer;
+    private final ObservationRegistry observationRegistry;
 
     @RabbitListener(queues = "${queue.user.deleted}")
     public void receive(UserDeletedDTO userId) {
-        Span span = tracer.nextSpan().name("process.user-deleted-message").start();
-        try (Tracer.SpanInScope scope = tracer.withSpan(span)) {
-            log.info("UserDeletedDTO received : userId={}", userId.id());
-            notificationDeleteByUserIdUseCase.execute(new UserId(userId.id()));
-        } catch (Exception e) {
-            span.error(e);
-            throw e;
-        } finally {
-            span.end();
-        }
+
+        Observation.createNotStarted("user.deleted.receiver", observationRegistry)
+                .lowCardinalityKeyValue("userId", String.valueOf(userId.id()))
+                .observe(() -> {
+                    log.info("UserDeletedDTO received : userId={}", userId.id());
+                    notificationDeleteByUserIdUseCase.execute(new UserId(userId.id()));
+                });
     }
-
-
 }
