@@ -78,7 +78,13 @@ public class ApiClientImpl implements ApiClient {
     @Override
     public void deleteUserDeletedCart(UserId userId) {
         log.info("Deleting cart for user with id {}", userId);
-        webClient.delete().uri(cartUrl + deleteUsersFromCartEndpoint + userId.toString()).retrieve().toBodilessEntity().block();
+
+        try {
+            webClient.delete().uri(cartUrl + deleteUsersFromCartEndpoint + userId.toString()).retrieve().toBodilessEntity().block();
+        } catch (Exception e) {
+            log.error("Error deleting cart for user with id {}", userId);
+        }
+
     }
 
 }
