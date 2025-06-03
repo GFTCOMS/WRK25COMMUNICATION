@@ -3,7 +3,6 @@ package com.gft.wrk25_communication.communication.infrastructure.messaging.consu
 import com.gft.wrk25_communication.communication.application.NotificationSaveUseCase;
 import com.gft.wrk25_communication.communication.application.dto.CartProductChangedDTO;
 import com.gft.wrk25_communication.communication.application.dto.ProductDTO;
-import com.gft.wrk25_communication.communication.application.dto.ProductStockChangedNotificationDTO;
 import com.gft.wrk25_communication.communication.application.web.ApiClient;
 import com.gft.wrk25_communication.communication.domain.ProductId;
 import com.gft.wrk25_communication.communication.domain.UserId;
@@ -17,7 +16,6 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.util.List;
 import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.assertThrows;
