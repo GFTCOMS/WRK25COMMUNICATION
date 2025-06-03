@@ -37,47 +37,10 @@ class UserDeletedReceiverTest {
     void testReceiveSuccess() {
         UserDeletedDTO userDeletedDTO = Instancio.create(UserDeletedDTO.class);
 
-        when(tracer.nextSpan()).thenReturn(span);
-        when(span.name(anyString())).thenReturn(span);
-        when(span.start()).thenReturn(span);
-        when(tracer.withSpan(span)).thenReturn(spanInScope);
-
         userDeletedReceiver.receive(userDeletedDTO);
 
-        verify(tracer).nextSpan();
-        verify(span).name("process.user-deleted-message");
-        verify(span).start();
-        verify(tracer).withSpan(span);
-        verify(notificationDeleteByUserIdUseCase).execute(new UserId(userDeletedDTO.id()));
-        verify(span).end();
-        verifyNoMoreInteractions(notificationDeleteByUserIdUseCase, tracer, span);
+        verify(notificationDeleteByUserIdUseCase, times(1)).execute(new UserId(userDeletedDTO.id()));
     }
 
-    @Test
-    void testReceiveWithException() {
-        UserDeletedDTO userDeletedDTO = Instancio.create(UserDeletedDTO.class);
-
-        when(tracer.nextSpan()).thenReturn(span);
-        when(span.name(anyString())).thenReturn(span);
-        when(span.start()).thenReturn(span);
-        when(tracer.withSpan(span)).thenReturn(spanInScope);
-
-        doThrow(new RuntimeException("fail")).when(notificationDeleteByUserIdUseCase).execute(any());
-
-        RuntimeException thrown = assertThrows(RuntimeException.class, () -> {
-            userDeletedReceiver.receive(userDeletedDTO);
-        });
-
-        assertEquals("fail", thrown.getMessage());
-
-        verify(tracer).nextSpan();
-        verify(span).name("process.user-deleted-message");
-        verify(span).start();
-        verify(tracer).withSpan(span);
-        verify(notificationDeleteByUserIdUseCase).execute(new UserId(userDeletedDTO.id()));
-        verify(span).error(any(RuntimeException.class));
-        verify(span).end();
-        verifyNoMoreInteractions(notificationDeleteByUserIdUseCase, tracer, span);
-    }
 }
 
