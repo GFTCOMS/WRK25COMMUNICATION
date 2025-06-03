@@ -16,6 +16,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.web.reactive.function.client.WebClient;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.UUID;
 
@@ -128,5 +129,14 @@ class ApiClientImplTest {
         String requestPath = mockWebServer.takeRequest().getPath();
 
         assertTrue(requestPath.contains(userId.userId().toString()));
+    }
+
+    @Test
+    void deleteUserDeletedCartWithException() throws IOException {
+        UserId userId = Instancio.create(UserId.class);
+
+        mockWebServer.shutdown();
+
+        assertDoesNotThrow(() -> apiClient.deleteUserDeletedCart(userId));
     }
 }
