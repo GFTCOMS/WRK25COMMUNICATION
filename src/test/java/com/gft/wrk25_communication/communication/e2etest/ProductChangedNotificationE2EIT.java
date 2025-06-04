@@ -24,6 +24,7 @@ import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.*;
 
 @ActiveProfiles("test")
@@ -73,7 +74,7 @@ public class ProductChangedNotificationE2EIT {
 
         Optional<NotificationEntity> entitySaved = notificationEntityRepository.findById(notificationDTO.id());
 
-        assertThat(entitySaved).isPresent();
+        assertTrue(entitySaved.isPresent());
 
         NotificationEntity entity = entitySaved.get();
 
@@ -85,11 +86,10 @@ public class ProductChangedNotificationE2EIT {
                 entity.isImportant()
                 );
 
-        assertEquals(notificationDTO.id(), persistedDTO.id(), "El ID debe coincidir");
-        assertEquals(notificationDTO.userId(), persistedDTO.userId(), "El User ID debe coincidir");
-        assertEquals(notificationDTO.message(), persistedDTO.message(), "El mensaje debe coincidir");
-        assertEquals(notificationDTO.createdAt().withNano(0), persistedDTO.createdAt().withNano(0), "La fecha debe coincidir (ignorando nanos)");
+        assertEquals(notificationDTO.id(), persistedDTO.id());
+        assertEquals(notificationDTO.userId(), persistedDTO.userId());
+        assertEquals(notificationDTO.message(), persistedDTO.message());
+        assertEquals(notificationDTO.createdAt().withNano(0), persistedDTO.createdAt().withNano(0));
         assertEquals(notificationDTO.important(), persistedDTO.important());
-
     }
 }
