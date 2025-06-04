@@ -89,7 +89,7 @@ public class ProductChangedNotificationE2EIT {
         assertEquals(notificationDTO.userId(), persistedDTO.userId(), "El User ID debe coincidir");
         assertEquals(notificationDTO.message(), persistedDTO.message(), "El mensaje debe coincidir");
         assertEquals(notificationDTO.createdAt().withNano(0), persistedDTO.createdAt().withNano(0), "La fecha debe coincidir (ignorando nanos)");
-        assertEquals(notificationDTO.important(), persistedDTO.important(), "El flag de importancia debe coincidir");
+        assertEquals(notificationDTO.important(), persistedDTO.important());
 
     }
 }
