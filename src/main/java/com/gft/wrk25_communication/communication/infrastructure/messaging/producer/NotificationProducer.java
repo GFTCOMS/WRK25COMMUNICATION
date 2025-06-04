@@ -24,6 +24,7 @@ public class NotificationProducer {
         log.info("Publishing notification on RabbitMQ. Exchange: {}, RoutingKey: {}, Notification: {}",
                 exchange, routingKey, notification);
 
+
         rabbitTemplate.convertAndSend(exchange, routingKey, notification);
     }
 }
