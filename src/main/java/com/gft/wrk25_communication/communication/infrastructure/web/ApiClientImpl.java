@@ -7,8 +7,11 @@ import com.gft.wrk25_communication.communication.domain.UserId;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.HttpStatusCode;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.WebClient;
+import reactor.core.publisher.Mono;
 
 import java.util.List;
 import java.util.UUID;
@@ -53,14 +56,14 @@ public class ApiClientImpl implements ApiClient {
             return List.of();
         }
 
-        log.info("{} users not found", users.size());
+        log.info("{} users found", users.size());
 
         return users.stream().map(UserId::new).toList();
     }
 
     @Override
     public ProductDTO getProductById(ProductId productId) {
-        ProductDTO productDTO =  webClient.get()
+        ProductDTO productDTO = webClient.get()
                 .uri(productsUrl + findProductFromIdEndpoint + "/" + productId.id())
                 .retrieve()
                 .bodyToMono(ProductDTO.class)
@@ -71,20 +74,28 @@ public class ApiClientImpl implements ApiClient {
             return null;
         }
 
-        log.info("product found with id {}", productDTO.id());
+        log.info("Product found with id {}", productDTO.id());
         return productDTO;
     }
 
     @Override
     public void deleteUserDeletedCart(UserId userId) {
+
         log.info("Deleting cart for user with id {}", userId);
 
-        try {
-            webClient.delete().uri(cartUrl + deleteUsersFromCartEndpoint + userId.toString()).retrieve().toBodilessEntity().block();
-        } catch (Exception e) {
-            log.error("Error deleting cart for user with id {}", userId);
-        }
-
+        webClient.delete()
+                .uri(cartUrl + deleteUsersFromCartEndpoint + userId.userId().toString())
+                .exchangeToMono(response -> {
+                    HttpStatusCode status = response.statusCode();
+                    if (status == HttpStatus.NOT_FOUND) {
+                        log.warn("Cart not found for user id {}. Skipping deletion.", userId);
+                    } else if (status.is4xxClientError() || status.is5xxServerError()) {
+                        log.error("Error while deleting cart for user id {}. Status: {}", userId, status);
+                    } else {
+                        log.info("Successfully deleted cart for user id {}", userId);
+                    }
+                    return Mono.empty();
+                }).block();
     }
 
 }

@@ -10,6 +10,7 @@ import org.instancio.Instancio;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.reactive.function.client.WebClient;
 
 import java.io.IOException;
@@ -124,15 +125,56 @@ class ApiClientImplTest {
 
         String requestPath = mockWebServer.takeRequest().getPath();
 
+        assertNotNull(requestPath);
         assertTrue(requestPath.contains(userId.userId().toString()));
     }
 
     @Test
-    void deleteUserDeletedCartWithException() throws IOException {
+    void deleteUserDeletedCart5xxError() throws Exception {
+
         UserId userId = Instancio.create(UserId.class);
 
-        mockWebServer.shutdown();
+        mockWebServer.enqueue(new MockResponse()
+                        .setStatus("HTTP/1.1 500 Internal Server Error"));
 
-        assertDoesNotThrow(() -> apiClient.deleteUserDeletedCart(userId));
+        apiClient.deleteUserDeletedCart(userId);
+
+        String requestPath = mockWebServer.takeRequest().getPath();
+
+        assertNotNull(requestPath);
+        assertTrue(requestPath.contains(userId.userId().toString()));
     }
+
+    @Test
+    void deleteUserDeletedCart4xxError() throws Exception {
+
+        UserId userId = Instancio.create(UserId.class);
+
+        mockWebServer.enqueue(new MockResponse()
+                .setStatus("HTTP/1.1 400 Bad Request"));
+
+        apiClient.deleteUserDeletedCart(userId);
+
+        String requestPath = mockWebServer.takeRequest().getPath();
+
+        assertNotNull(requestPath);
+        assertTrue(requestPath.contains(userId.userId().toString()));
+    }
+
+    @Test
+    void deleteUserDeletedCartNotFoundError() throws Exception {
+
+        UserId userId = Instancio.create(UserId.class);
+
+        mockWebServer.enqueue(new MockResponse()
+                        .setStatus("HTTP/1.1 404 Not Found"));
+
+        apiClient.deleteUserDeletedCart(userId);
+
+        String requestPath = mockWebServer.takeRequest().getPath();
+
+        assertNotNull(requestPath);
+        assertTrue(requestPath.contains(userId.userId().toString()));
+    }
+
 }
