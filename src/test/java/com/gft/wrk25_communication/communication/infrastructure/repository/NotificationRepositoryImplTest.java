@@ -47,7 +47,7 @@ class NotificationRepositoryImplTest {
 
         UUID userId = notificationEntities.get(0).getUserId();
 
-        when(notificationEntityRepository.findAllByUserId(userId)).thenReturn(notificationEntities);
+        when(notificationEntityRepository.findAllByUserIdOrderByImportantDesc(userId)).thenReturn(notificationEntities);
 
         for (int i = 0; i < notificationEntities.size(); i++) {
             when(notificationFactory.reinstantiate(

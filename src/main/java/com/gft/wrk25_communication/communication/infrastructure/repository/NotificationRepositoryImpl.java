@@ -21,7 +21,7 @@ public class NotificationRepositoryImpl implements NotificationRepository {
 
     @Override
     public List<Notification> findAllByUserId(UserId userId) {
-        return repository.findAllByUserId(userId.userId()).stream().map(notificationEntity ->
+        return repository.findAllByUserIdOrderByImportantDesc(userId.userId()).stream().map(notificationEntity ->
                 factory.reinstantiate(
                         new NotificationId(notificationEntity.getId()),
                         notificationEntity.getCreatedAt(),
