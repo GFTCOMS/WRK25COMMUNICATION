@@ -10,7 +10,7 @@ import java.util.UUID;
 
 public interface NotificationEntityRepository extends JpaRepository<NotificationEntity, UUID> {
 
-    List<NotificationEntity> findAllByUserId(UUID userId);
+    List<NotificationEntity> findAllByUserIdOrderByImportantDesc(UUID userId);
 
     void deleteAllByUserId(UUID userId);
 
