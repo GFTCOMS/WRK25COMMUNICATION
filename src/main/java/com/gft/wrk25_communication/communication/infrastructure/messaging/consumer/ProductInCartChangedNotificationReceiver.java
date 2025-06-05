@@ -29,7 +29,7 @@ public class ProductInCartChangedNotificationReceiver {
     public void receive(CartProductChangedDTO notification) {
 
         log.info("CartProductChanged notification received: userId={}, productId={}",
-                notification.productId(), notification.userId());
+                notification.userId() ,notification.productId());
 
         UserId userId = new UserId(notification.userId());
 

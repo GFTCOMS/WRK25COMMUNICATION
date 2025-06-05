@@ -1,14 +1,18 @@
 flowchart TB
     ProductService[Product Service]
     OrderService[Order Service]
+    CartService[Cart Service]
+    UserService[User Service]
     RabbitMQ[RabbitMQ]
     Consumers[Message Consumers]
     NotificationService[Notification Service]
     DB[(PostgreSQL)]
     API[REST API]
-    
+
     ProductService -->|Stock Events| RabbitMQ
     OrderService -->|Order Events| RabbitMQ
+    CartService -->|Cart Events| RabbitMQ
+    UserService -->|User Events| RabbitMQ
     RabbitMQ -->|Events| Consumers
     Consumers -->|Process| NotificationService
     NotificationService -->|Store| DB

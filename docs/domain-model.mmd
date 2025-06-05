@@ -1,4 +1,22 @@
 classDiagram
+    class User {
+        -UUID id
+        -String email
+        -String name
+    }
+
+    class Cart {
+        -UUID id
+        -UUID userId
+        -List~CartItem~ items
+    }
+
+    class CartItem {
+        -UUID productId
+        -int quantity
+        -BigDecimal price
+    }
+
     Notification --> NotificationId
     Notification --> UserId
     NotificationFactory --> Notification
@@ -6,3 +24,6 @@ classDiagram
     NotificationCreatedEvent --> Notification
     NotificationDTO --> Notification
     NotificationEventPublisher --> NotificationCreatedEvent
+    User --> UserId : has
+    Cart --> User : belongs to
+    Cart --> CartItem : contains

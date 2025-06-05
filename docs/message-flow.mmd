@@ -1,5 +1,8 @@
 sequenceDiagram
-    participant ExternalService as External Service
+    participant ProductService as Product Service
+    participant OrderService as Order Service
+    participant CartService as Cart Service
+    participant UserService as User Service
     participant RabbitMQ as RabbitMQ
     participant Consumer as Message Consumer
     participant Factory as Notification Factory
@@ -9,7 +12,10 @@ sequenceDiagram
     participant Publisher as Event Publisher
     participant Producer as Notification Producer
 
-    ExternalService->>RabbitMQ: Send Event
+    ProductService->>RabbitMQ: Send Stock Event
+    OrderService->>RabbitMQ: Send Order Event
+    CartService->>RabbitMQ: Send Cart Event
+    UserService->>RabbitMQ: Send User Event
     RabbitMQ->>Consumer: Deliver Event
     Consumer->>Factory: Create Notification
     Factory->>UseCase: Save Notification
