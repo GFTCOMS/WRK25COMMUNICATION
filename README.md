@@ -11,6 +11,8 @@ The WRK25 Communication Microservice is a Spring Boot application designed to ha
   - Product stock change notifications
   - Product restock notifications
   - Order status change notifications
+  - Cart update notifications
+  - User account notifications
 - REST API for notification management
 - Persistence with PostgreSQL database
 
@@ -22,6 +24,8 @@ flowchart TB
     subgraph "External Services"
         ProductService[Product Service]
         OrderService[Order Service]
+        CartService[Cart Service]
+        UserService[User Service]
     end
 
     subgraph "WRK25 Communication Service"
@@ -34,6 +38,8 @@ flowchart TB
 
     ProductService -->|Stock Events| RabbitMQ
     OrderService -->|Order Events| RabbitMQ
+    CartService -->|Cart Events| RabbitMQ
+    UserService -->|User Events| RabbitMQ
     RabbitMQ -->|Events| Consumers
     Consumers -->|Process| NotificationService
     NotificationService -->|Store| DB
@@ -44,6 +50,24 @@ flowchart TB
 ### Domain Model
 ```mermaid
 classDiagram
+    class User {
+        -UUID id
+        -String email
+        -String name
+    }
+
+    class Cart {
+        -UUID id
+        -UUID userId
+        -List~CartItem~ items
+    }
+
+    class CartItem {
+        -UUID productId
+        -int quantity
+        -BigDecimal price
+    }
+
     class Notification {
         -NotificationId id
         -LocalDateTime createdAt
@@ -60,11 +84,21 @@ classDiagram
         -UUID id
     }
 
+    class NotificationDTO {
+        +UUID id
+        +LocalDateTime createdAt
+        +UUID userId
+        +String message
+        +Boolean important
+    }
+
     class NotificationFactory {
         +createLowStockNotification(UserId, ProductDTO)
         +createOrderStatusChangedNotification(UserId, OrderId, String)
         +createProductChangedNotification(UserId, ProductDTO)
         +createProductRestockNotification(UserId, ProductDTO)
+        +createCartUpdateNotification(UserId, CartDTO)
+        +createUserAccountNotification(UserId, String)
     }
 
     class NotificationRepository {
@@ -76,16 +110,33 @@ classDiagram
         +void setImportant(NotificationId, boolean)
     }
 
+    class NotificationCreatedEvent {
+        +Notification notification
+    }
+
+    class NotificationEventPublisher {
+        +publish(NotificationCreatedEvent)
+    }
+
     Notification --> NotificationId
     Notification --> UserId
     NotificationFactory --> Notification : creates
     NotificationRepository --> Notification : manages
+    NotificationDTO --> Notification : represents
+    NotificationCreatedEvent --> Notification : contains
+    NotificationEventPublisher --> NotificationCreatedEvent : publishes
+    User --> UserId : has
+    Cart --> User : belongs to
+    Cart --> CartItem : contains
 ```
 
 ### Message Flow
 ```mermaid
 sequenceDiagram
-    participant ExternalService as External Service
+    participant ProductService as Product Service
+    participant OrderService as Order Service
+    participant CartService as Cart Service
+    participant UserService as User Service
     participant RabbitMQ as RabbitMQ
     participant Consumer as Message Consumer
     participant Factory as Notification Factory
@@ -93,7 +144,10 @@ sequenceDiagram
     participant Repository as Notification Repository
     participant DB as Database
 
-    ExternalService->>RabbitMQ: Send Event (product.stock.low, order.state.changed, etc.)
+    ProductService->>RabbitMQ: Send Stock Event (product.stock.low, etc.)
+    OrderService->>RabbitMQ: Send Order Event (order.state.changed, etc.)
+    CartService->>RabbitMQ: Send Cart Event (cart.updated, etc.)
+    UserService->>RabbitMQ: Send User Event (user.registered, user.updated, etc.)
     RabbitMQ->>Consumer: Deliver Event
     Consumer->>Factory: Create Notification
     Factory->>Service: Save Notification
@@ -202,9 +256,19 @@ PATCH https://coms-microservice-899231617905.europe-southwest1.run.app/api/notif
 Updates the importance status of a notification.
 
 ## Monitoring
-To be implemented:
 
-The application exposes metrics for Prometheus at the `/actuator/prometheus` endpoint. A sample Prometheus configuration is provided in the `monitoring` directory.
+The application exposes metrics for Prometheus at the `/actuator/prometheus` endpoint. A sample Prometheus configuration is provided in the `prometheus.yml` file in the project root.
+
+The Prometheus configuration is set up to scrape metrics from the Cloud Run deployment at:
+```
+https://coms-microservice-899231617905.europe-southwest1.run.app/actuator/prometheus
+```
+
+To use this configuration:
+1. Install Prometheus (https://prometheus.io/download/)
+2. Use the provided `prometheus.yml` file
+3. Start Prometheus with this configuration
+4. Access the Prometheus UI to view metrics
 
 ## Development
 

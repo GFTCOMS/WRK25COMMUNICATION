@@ -1,8 +1,27 @@
 classDiagram
+class User {
+- String id
+- String email
+- String name
+}
+
+class Cart {
+- String id
+- String userId
+- List~CartItem~ items
+}
+
+class CartItem {
+- String productId
+- int quantity
+- BigDecimal price
+}
+
 class NotificationEvent {
 - String userId
 - String message
 - LocalDateTime timestamp
+- String eventType
 }
 
 class Notification {
@@ -59,13 +78,18 @@ class NotificationEntity {
 }
 
 class RabbitMQConfig {
-+ Queue notificationQueue()
++ Queue productQueue()
++ Queue orderQueue()
++ Queue cartQueue()
++ Queue userQueue()
 }
 
 class Queue {
 - String name
 }
 
+User --> Cart : has
+Cart --> CartItem : contains
 NotificationEvent --> Notification : transforms into
 Notification --> NotificationRepository : persisted by
 NotificationService --> NotificationRepository : uses
