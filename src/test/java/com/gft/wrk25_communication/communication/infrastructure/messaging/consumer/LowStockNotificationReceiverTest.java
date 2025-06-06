@@ -1,13 +1,14 @@
 package com.gft.wrk25_communication.communication.infrastructure.messaging.consumer;
 
 import com.gft.wrk25_communication.communication.application.NotificationSaveUseCase;
-import com.gft.wrk25_communication.communication.application.dto.LowStockNotificationDTO;
 import com.gft.wrk25_communication.communication.application.dto.ProductDTO;
+import com.gft.wrk25_communication.communication.application.dto.LowStockNotificationDTO;
 import com.gft.wrk25_communication.communication.application.web.ApiClient;
 import com.gft.wrk25_communication.communication.domain.ProductId;
 import com.gft.wrk25_communication.communication.domain.UserId;
 import com.gft.wrk25_communication.communication.domain.notification.Notification;
 import com.gft.wrk25_communication.communication.domain.notification.NotificationFactory;
+import com.gft.wrk25_communication.communication.infrastructure.exception.ProductNotFoundException;
 import org.instancio.Instancio;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -15,21 +16,23 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.util.List;
 import java.util.UUID;
 
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 class LowStockNotificationReceiverTest {
 
     @Mock
-    private ApiClient apiClient;
+    ApiClient apiClient;
 
     @Mock
-    private NotificationFactory notificationFactory;
+    NotificationFactory notificationFactory;
 
     @Mock
-    private NotificationSaveUseCase notificationSaveUseCase;
+    NotificationSaveUseCase notificationSaveUseCase;
 
     @InjectMocks
     private LowStockNotificationReceiver receiver;
@@ -37,22 +40,65 @@ class LowStockNotificationReceiverTest {
     @Test
     void testReceive() {
 
-        NotificationFactory workingFactory = new NotificationFactory();
-
         UserId userId = new UserId(UUID.randomUUID());
-        ProductDTO productDTO = Instancio.create(ProductDTO.class);
+        ProductDTO product = Instancio.create(ProductDTO.class);
+        ProductId productId = new ProductId(product.id());
 
-        LowStockNotificationDTO notification = new LowStockNotificationDTO(userId.userId(), productDTO.id(), productDTO.inventoryData().stock());
-        Notification notificationToReturn = workingFactory.createLowStockNotification(userId, productDTO);
+        LowStockNotificationDTO notification = new LowStockNotificationDTO(
+                product.id(),
+                product.inventoryData().stock()
+        );
 
-        when(apiClient.getProductById(new ProductId(productDTO.id()))).thenReturn(productDTO);
+        Notification notificationToReturn = Instancio.create(Notification.class);
 
-        when(notificationFactory.createLowStockNotification(userId, productDTO)).thenReturn(notificationToReturn);
+        when(apiClient.getProductById(productId)).thenReturn(product);
+
+        when(apiClient.getUsersThatHaveProductInFavorites(productId)).thenReturn(List.of(userId));
+
+        when(notificationFactory.createLowStockNotification(userId, product)).thenReturn(notificationToReturn);
 
         receiver.receive(notification);
 
-        verify(notificationFactory, times(1)).createLowStockNotification(userId, productDTO);
-        verify(notificationSaveUseCase, times(1)).execute(notificationToReturn);
+        verify(apiClient, times(1)).getProductById(productId);
+        verify(apiClient, times(1)).getUsersThatHaveProductInFavorites(productId);
+        verify(notificationFactory, times(1)).createLowStockNotification(userId, product);
+        verify(notificationSaveUseCase,times(1)).execute(notificationToReturn);
+    }
+
+    @Test
+    void testReceiveUsersEmpty() {
+
+        ProductDTO product = Instancio.create(ProductDTO.class);
+        ProductId productId = new ProductId(product.id());
+
+        LowStockNotificationDTO notification = new LowStockNotificationDTO(
+                product.id(),
+                product.inventoryData().stock()
+        );
+
+        when(apiClient.getProductById(productId)).thenReturn(Instancio.create(ProductDTO.class));
+
+        when(apiClient.getUsersThatHaveProductInFavorites(productId)).thenReturn(List.of());
+
+        receiver.receive(notification);
+
+        verify(notificationSaveUseCase, times(0)).execute(any(Notification.class));
+    }
+
+    @Test
+    void testReceiveProductIdNotFound() {
+
+        ProductDTO product = Instancio.create(ProductDTO.class);
+        ProductId productId = new ProductId(product.id());
+
+        LowStockNotificationDTO notification = new LowStockNotificationDTO(
+                product.id(),
+                product.inventoryData().stock()
+        );
+
+        when(apiClient.getProductById(productId)).thenReturn(null);
+
+        assertThrows(ProductNotFoundException.class, () -> receiver.receive(notification));
     }
 
 }
