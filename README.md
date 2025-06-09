@@ -1,7 +1,7 @@
 # WRK25 Communication Microservice
 
 ## Overview
-The WRK25 Communication Microservice is a Spring Boot application designed to handle notifications for an e-commerce system. It processes events from other services and creates notifications for users about product stock changes, order status updates, and other important events.
+The WRK25 Communication Microservice is a Spring Boot application designed to handle notifications for an e-commerce system. It processes events from other services and creates notifications for users about product stock changes, order status updates, and other important events...
 
 ## Features
 - Notification management for users
